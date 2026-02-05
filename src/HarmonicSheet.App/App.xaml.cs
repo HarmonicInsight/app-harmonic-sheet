@@ -2,12 +2,15 @@ using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using HarmonicSheet.Services;
 using HarmonicSheet.ViewModels;
+using HarmonicSheet.Views;
 
 namespace HarmonicSheet;
 
 public partial class App : Application
 {
     private ServiceProvider? _serviceProvider;
+
+    public static IServiceProvider? Services { get; private set; }
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -16,6 +19,15 @@ public partial class App : Application
         var services = new ServiceCollection();
         ConfigureServices(services);
         _serviceProvider = services.BuildServiceProvider();
+        Services = _serviceProvider;
+
+        // 初回起動時はチュートリアルを表示
+        var tutorialService = _serviceProvider.GetRequiredService<ITutorialService>();
+        if (!tutorialService.IsCompleted)
+        {
+            var tutorialWindow = new TutorialWindow(tutorialService);
+            tutorialWindow.ShowDialog();
+        }
 
         var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
         mainWindow.Show();
@@ -23,13 +35,18 @@ public partial class App : Application
 
     private void ConfigureServices(IServiceCollection services)
     {
-        // Services
+        // Core Services
         services.AddSingleton<ISpeechService, SpeechService>();
         services.AddSingleton<IClaudeService, ClaudeService>();
         services.AddSingleton<ISpreadsheetService, SpreadsheetService>();
         services.AddSingleton<IDocumentService, DocumentService>();
         services.AddSingleton<IMailService, MailService>();
         services.AddSingleton<IPrintService, PrintService>();
+
+        // 拡張サービス
+        services.AddSingleton<IContactService, ContactService>();
+        services.AddSingleton<IAccessibilityService, AccessibilityService>();
+        services.AddSingleton<ITutorialService, TutorialService>();
 
         // ViewModels
         services.AddTransient<MainViewModel>();
@@ -43,6 +60,12 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        // アクセシビリティ設定を保存
+        if (_serviceProvider?.GetService<IAccessibilityService>() is AccessibilityService accessibility)
+        {
+            accessibility.SaveSettings();
+        }
+
         _serviceProvider?.Dispose();
         base.OnExit(e);
     }

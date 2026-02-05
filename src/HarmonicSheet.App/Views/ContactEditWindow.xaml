@@ -1,0 +1,113 @@
+<Window x:Class="HarmonicSheet.Views.ContactEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="連絡先の編集"
+        Width="500" Height="550"
+        WindowStartupLocation="CenterOwner"
+        FontFamily="Yu Gothic UI, Meiryo, Segoe UI"
+        FontSize="20"
+        Background="#F8FAFC"
+        ResizeMode="NoResize">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 名前 -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="名前（必須）" FontWeight="SemiBold" Margin="0,0,0,5"/>
+            <TextBox x:Name="NameInput"
+                     FontSize="22"
+                     Padding="12,10"
+                     BorderBrush="#CBD5E1"
+                     BorderThickness="2"/>
+        </StackPanel>
+
+        <!-- メールアドレス -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,15">
+            <TextBlock Text="メールアドレス（必須）" FontWeight="SemiBold" Margin="0,0,0,5"/>
+            <TextBox x:Name="EmailInput"
+                     FontSize="22"
+                     Padding="12,10"
+                     BorderBrush="#CBD5E1"
+                     BorderThickness="2"/>
+        </StackPanel>
+
+        <!-- 電話番号 -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,15">
+            <TextBlock Text="電話番号" FontWeight="SemiBold" Margin="0,0,0,5"/>
+            <TextBox x:Name="PhoneInput"
+                     FontSize="22"
+                     Padding="12,10"
+                     BorderBrush="#CBD5E1"
+                     BorderThickness="2"/>
+        </StackPanel>
+
+        <!-- グループ -->
+        <StackPanel Grid.Row="3" Margin="0,0,0,15">
+            <TextBlock Text="グループ" FontWeight="SemiBold" Margin="0,0,0,5"/>
+            <ComboBox x:Name="GroupInput"
+                      FontSize="20"
+                      Padding="12,10">
+                <ComboBoxItem Content="家族"/>
+                <ComboBoxItem Content="友人"/>
+                <ComboBoxItem Content="病院"/>
+                <ComboBoxItem Content="お店"/>
+                <ComboBoxItem Content="役所"/>
+                <ComboBoxItem Content="その他" IsSelected="True"/>
+            </ComboBox>
+        </StackPanel>
+
+        <!-- メモ -->
+        <StackPanel Grid.Row="4" Margin="0,0,0,15">
+            <TextBlock Text="メモ" FontWeight="SemiBold" Margin="0,0,0,5"/>
+            <TextBox x:Name="NotesInput"
+                     FontSize="18"
+                     Padding="12,10"
+                     Height="80"
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True"
+                     BorderBrush="#CBD5E1"
+                     BorderThickness="2"/>
+        </StackPanel>
+
+        <!-- お気に入り -->
+        <CheckBox x:Name="FavoriteCheck"
+                  Grid.Row="5"
+                  Content="お気に入りに登録（リストの上に表示）"
+                  FontSize="18"
+                  Margin="0,0,0,20"/>
+
+        <!-- ボタン -->
+        <StackPanel Grid.Row="7"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+
+            <Button Content="キャンセル"
+                    FontSize="18"
+                    Padding="25,12"
+                    Margin="0,0,10,0"
+                    Background="#E2E8F0"
+                    BorderThickness="0"
+                    Click="OnCancelClick"
+                    Cursor="Hand"/>
+
+            <Button Content="保存"
+                    FontSize="18"
+                    Padding="35,12"
+                    Background="#059669"
+                    Foreground="White"
+                    BorderThickness="0"
+                    Click="OnSaveClick"
+                    Cursor="Hand"/>
+        </StackPanel>
+    </Grid>
+</Window>
