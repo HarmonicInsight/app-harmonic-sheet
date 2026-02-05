@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\app.ico</ApplicationIcon>
+    <AssemblyName>HarmonicSheet</AssemblyName>
+    <RootNamespace>HarmonicSheet</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>HarmonicInsight</Authors>
+    <Description>シニア向けのシンプルなオフィスアプリ - 文書・表計算・メールを1つに</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="ClosedXML" Version="0.102.2" />
+    <PackageReference Include="MailKit" Version="4.3.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="System.Speech" Version="8.0.0" />
+    <!-- Syncfusion コンポーネント -->
+    <PackageReference Include="Syncfusion.SfSpreadsheet.WPF" Version="24.2.9" />
+    <PackageReference Include="Syncfusion.SfRichTextBoxAdv.WPF" Version="24.2.9" />
+    <PackageReference Include="Syncfusion.DocIO.Wpf" Version="24.2.9" />
+  </ItemGroup>
+
+</Project>
