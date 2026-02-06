@@ -16,6 +16,17 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
+        // グローバル例外ハンドラー
+        AppDomain.CurrentDomain.UnhandledException += (s, args) =>
+        {
+            var ex = args.ExceptionObject as Exception;
+            MessageBox.Show(
+                $"予期しないエラーが発生しました。\n\n{ex?.Message}\n\n{ex?.StackTrace}",
+                "エラー",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        };
+
         try
         {
             // Syncfusionライセンスキーの登録（ある場合）
@@ -26,19 +37,23 @@ public partial class App : Application
             _serviceProvider = services.BuildServiceProvider();
             Services = _serviceProvider;
 
-            // 初回起動時はチュートリアルを表示
-            try
+            // 初回起動時はチュートリアルを表示（コマンドライン引数で無効化可能）
+            if (!e.Args.Contains("--skip-tutorial"))
             {
-                var tutorialService = _serviceProvider.GetRequiredService<ITutorialService>();
-                if (!tutorialService.IsCompleted)
+                try
                 {
-                    var tutorialWindow = new TutorialWindow(tutorialService);
-                    tutorialWindow.ShowDialog();
+                    var tutorialService = _serviceProvider.GetRequiredService<ITutorialService>();
+                    if (!tutorialService.IsCompleted)
+                    {
+                        var tutorialWindow = new TutorialWindow(tutorialService);
+                        tutorialWindow.ShowDialog();
+                    }
                 }
-            }
-            catch
-            {
-                // チュートリアル表示エラーは無視して起動を続行
+                catch (Exception ex)
+                {
+                    // チュートリアル表示エラーは無視して起動を続行
+                    System.Diagnostics.Debug.WriteLine($"Tutorial error: {ex.Message}");
+                }
             }
 
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
@@ -46,8 +61,18 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
+            var errorMessage = $"アプリケーションの起動中にエラーが発生しました。\n\n";
+            errorMessage += $"エラー: {ex.Message}\n\n";
+
+            if (ex.InnerException != null)
+            {
+                errorMessage += $"詳細: {ex.InnerException.Message}\n\n";
+            }
+
+            errorMessage += $"スタックトレース:\n{ex.StackTrace}";
+
             MessageBox.Show(
-                $"アプリケーションの起動中にエラーが発生しました。\n\n{ex.Message}",
+                errorMessage,
                 "起動エラー",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
