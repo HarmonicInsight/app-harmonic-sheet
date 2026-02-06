@@ -30,6 +30,15 @@
 
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
                     <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#6B7280"
+                            MinWidth="150"
+                            MinHeight="60"
+                            Padding="20,12"
+                            Click="OnUndoClick"
+                            ToolTip="元に戻す（やり直し）">
+                        <TextBlock Text="↩ 元に戻す" FontSize="22" FontWeight="Bold"/>
+                    </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
                             MinWidth="150"
                             MinHeight="60"
                             Padding="20,12"
@@ -124,6 +133,42 @@
                         Click="OnAverageClick"
                         ToolTip="選択範囲の平均を計算">
                     <TextBlock Text="平均" FontSize="24" FontWeight="Bold"/>
+                </Button>
+                <Button Style="{StaticResource ActionButtonStyle}"
+                        Background="#F59E0B"
+                        MinWidth="200"
+                        MinHeight="60"
+                        Padding="20,12"
+                        Click="OnTax10Click"
+                        ToolTip="選択セルに消費税10%を追加">
+                    <TextBlock Text="消費税10%" FontSize="22" FontWeight="Bold"/>
+                </Button>
+                <Button Style="{StaticResource ActionButtonStyle}"
+                        Background="#FB923C"
+                        MinWidth="200"
+                        MinHeight="60"
+                        Padding="20,12"
+                        Click="OnTax8Click"
+                        ToolTip="選択セルに消費税8%を追加">
+                    <TextBlock Text="消費税8%" FontSize="22" FontWeight="Bold"/>
+                </Button>
+                <Button Style="{StaticResource ActionButtonStyle}"
+                        Background="#EF4444"
+                        MinWidth="200"
+                        MinHeight="60"
+                        Padding="20,12"
+                        Click="OnDiscountClick"
+                        ToolTip="割引計算">
+                    <TextBlock Text="割引計算" FontSize="24" FontWeight="Bold"/>
+                </Button>
+                <Button Style="{StaticResource ActionButtonStyle}"
+                        Background="#14B8A6"
+                        MinWidth="200"
+                        MinHeight="60"
+                        Padding="20,12"
+                        Click="OnCumulativeClick"
+                        ToolTip="これまでの累計を計算">
+                    <TextBlock Text="累計" FontSize="24" FontWeight="Bold"/>
                 </Button>
             </WrapPanel>
         </Border>

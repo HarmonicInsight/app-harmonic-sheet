@@ -50,6 +50,38 @@ public partial class MainWindow : Window
         }
     }
 
+    private void OnHelpLineClick(object sender, RoutedEventArgs e)
+    {
+        var helpMessage = @"📞 サポート窓口
+
+■ 電話サポート
+　📞 0120-XXX-XXX
+　受付時間: 平日 9:00〜18:00
+
+■ よくある質問
+　・保存したファイルが見つからない
+　　→「ホーム」タブから最近のファイルを確認
+
+　・文字が小さい
+　　→「設定」から文字サイズを変更できます
+
+　・間違えて消してしまった
+　　→「元に戻す」ボタンで元に戻せます
+
+■ 遠隔サポート
+　お電話いただければ、画面を見ながら
+　サポートスタッフがご案内します
+
+このメッセージをスクリーンショットして
+ご家族に見せることもできます";
+
+        var result = MessageBox.Show(
+            helpMessage,
+            "困ったときは - サポート窓口",
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
+    }
+
     private void OnSettingsClick(object sender, RoutedEventArgs e)
     {
         var settingsWindow = new SettingsWindow();

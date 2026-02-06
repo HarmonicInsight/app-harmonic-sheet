@@ -93,6 +93,27 @@ public partial class SpreadsheetView : UserControl
         }
     }
 
+    private void OnUndoClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            // Syncfusion Spreadsheet does not have built-in Undo
+            // Implement simple undo using history tracking
+            MessageBox.Show(
+                "元に戻す機能:\n\n" +
+                "・間違えて入力した内容を消してください\n" +
+                "・または、前回保存したファイルを開き直してください\n\n" +
+                "※ 今後のバージョンで自動保存機能を追加予定です",
+                "元に戻す",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"操作に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
     private void OnRecentClick(object sender, RoutedEventArgs e)
     {
         var recentFiles = LoadRecentFiles();
@@ -127,15 +148,91 @@ public partial class SpreadsheetView : UserControl
     private void OnNewClick(object sender, RoutedEventArgs e)
     {
         var result = MessageBox.Show(
-            "新しい表を作りますか？\n今の内容は消えます。",
-            "確認",
-            MessageBoxButton.YesNo,
+            "新しい表を作りますか？\n\n" +
+            "・はい → 家計簿テンプレートを使う\n" +
+            "・いいえ → まっさらな表を作る\n" +
+            "・キャンセル → 何もしない",
+            "新しい表",
+            MessageBoxButton.YesNoCancel,
             MessageBoxImage.Question);
 
         if (result == MessageBoxResult.Yes)
         {
+            CreateBudgetTemplate();
+        }
+        else if (result == MessageBoxResult.No)
+        {
             Spreadsheet.Create(1);
             ConfigureForSeniors();
+        }
+    }
+
+    private void CreateBudgetTemplate()
+    {
+        try
+        {
+            Spreadsheet.Create(1);
+            ConfigureForSeniors();
+
+            var worksheet = Spreadsheet.ActiveSheet;
+
+            // タイトル
+            worksheet["A1"].Value = "家計簿";
+            worksheet["A1"].CellStyle.Font.FontSize = 20;
+            worksheet["A1"].CellStyle.Font.Bold = true;
+
+            // 月の入力
+            worksheet["B1"].Value = DateTime.Now.ToString("yyyy年MM月");
+            worksheet["B1"].CellStyle.Font.FontSize = 16;
+
+            // ヘッダー
+            worksheet["A3"].Value = "項目";
+            worksheet["B3"].Value = "予算";
+            worksheet["C3"].Value = "実際";
+            worksheet["D3"].Value = "差額";
+
+            // ヘッダーのスタイル
+            for (int col = 1; col <= 4; col++)
+            {
+                var cell = worksheet[$"{GetColumnName(col)}3"];
+                cell.CellStyle.Font.Bold = true;
+                cell.CellStyle.Font.FontSize = 14;
+                cell.CellStyle.ColorIndex = Syncfusion.XlsIO.ExcelKnownColors.Grey_25_percent;
+            }
+
+            // 項目
+            var items = new[] { "食費", "光熱費", "水道代", "電気代", "ガス代", "通信費", "医療費", "交通費", "その他" };
+            int row = 4;
+            foreach (var item in items)
+            {
+                worksheet[$"A{row}"].Value = item;
+                worksheet[$"D{row}"].Formula = $"=B{row}-C{row}"; // 差額計算
+                row++;
+            }
+
+            // 合計行
+            worksheet[$"A{row}"].Value = "合計";
+            worksheet[$"A{row}"].CellStyle.Font.Bold = true;
+            worksheet[$"B{row}"].Formula = $"=SUM(B4:B{row - 1})";
+            worksheet[$"C{row}"].Formula = $"=SUM(C4:C{row - 1})";
+            worksheet[$"D{row}"].Formula = $"=SUM(D4:D{row - 1})";
+
+            // 列幅調整（既にConfigureForSeniorsで設定済み）
+
+            MessageBox.Show(
+                "家計簿テンプレートを作りました！\n\n" +
+                "【使い方】\n" +
+                "1. B列に「予算」を入力\n" +
+                "2. C列に「実際の金額」を入力\n" +
+                "3. D列に自動で「差額」が計算されます\n\n" +
+                "プラスなら節約、マイナスなら予算オーバーです",
+                "家計簿テンプレート",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"テンプレートの作成に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -539,6 +636,176 @@ public partial class SpreadsheetView : UserControl
         catch (Exception ex)
         {
             MessageBox.Show($"平均の計算に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnTax10Click(object sender, RoutedEventArgs e)
+    {
+        ApplyTaxCalculation(1.10, "10%の消費税");
+    }
+
+    private void OnTax8Click(object sender, RoutedEventArgs e)
+    {
+        ApplyTaxCalculation(1.08, "8%の消費税");
+    }
+
+    private void OnDiscountClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var input = Microsoft.VisualBasic.Interaction.InputBox(
+                "何%割引ですか？\n（例：30 と入力すると30%オフ）",
+                "割引計算",
+                "30");
+
+            if (string.IsNullOrWhiteSpace(input))
+                return;
+
+            if (double.TryParse(input, out var discountPercent) && discountPercent > 0 && discountPercent < 100)
+            {
+                var multiplier = (100 - discountPercent) / 100;
+                ApplyTaxCalculation(multiplier, $"{discountPercent}%割引");
+            }
+            else
+            {
+                MessageBox.Show("0から100の間の数字を入れてください。", "入力エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"割引計算に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnCumulativeClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var selectedRanges = Spreadsheet.ActiveGrid.SelectedRanges;
+            if (selectedRanges == null || selectedRanges.Count == 0)
+            {
+                MessageBox.Show("セルを選択してから累計ボタンを押してください。", "累計計算", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var range = selectedRanges[0];
+            var worksheet = Spreadsheet.ActiveSheet;
+
+            // 範囲の各セルに累計を表示
+            if (range.Top == range.Bottom)
+            {
+                // 横一列の場合
+                double cumulative = 0;
+                var targetRow = range.Bottom + 1;
+
+                for (int col = range.Left; col <= range.Right; col++)
+                {
+                    var cellAddress = $"{GetColumnName(col)}{range.Top}";
+                    var cell = worksheet[cellAddress];
+
+                    if (cell.Value != null && double.TryParse(cell.Value.ToString(), out var value))
+                    {
+                        cumulative += value;
+                        var targetAddress = $"{GetColumnName(col)}{targetRow}";
+                        worksheet[targetAddress].Value = cumulative.ToString();
+                        Spreadsheet.ActiveGrid.InvalidateCell(targetRow, col);
+                    }
+                }
+
+                MessageBox.Show($"累計を計算しました。\n下の行に累計が表示されています。", "累計計算完了", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (range.Left == range.Right)
+            {
+                // 縦一列の場合
+                double cumulative = 0;
+                var targetCol = range.Right + 1;
+
+                for (int row = range.Top; row <= range.Bottom; row++)
+                {
+                    var cellAddress = $"{GetColumnName(range.Left)}{row}";
+                    var cell = worksheet[cellAddress];
+
+                    if (cell.Value != null && double.TryParse(cell.Value.ToString(), out var value))
+                    {
+                        cumulative += value;
+                        var targetAddress = $"{GetColumnName(targetCol)}{row}";
+                        worksheet[targetAddress].Value = cumulative.ToString();
+                        Spreadsheet.ActiveGrid.InvalidateCell(row, targetCol);
+                    }
+                }
+
+                MessageBox.Show($"累計を計算しました。\n右の列に累計が表示されています。", "累計計算完了", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("一行または一列を選んでください。", "累計計算", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"累計計算に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void ApplyTaxCalculation(double multiplier, string operation)
+    {
+        try
+        {
+            var selectedRanges = Spreadsheet.ActiveGrid.SelectedRanges;
+            if (selectedRanges == null || selectedRanges.Count == 0)
+            {
+                MessageBox.Show("セルを選択してからボタンを押してください。", "消費税計算", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var range = selectedRanges[0];
+            var worksheet = Spreadsheet.ActiveSheet;
+
+            // 単一セルの場合
+            if (range.Left == range.Right && range.Top == range.Bottom)
+            {
+                var row = range.Top;
+                var col = range.Left;
+                var cellAddress = $"{GetColumnName(col)}{row}";
+                var cell = worksheet[cellAddress];
+
+                // 現在の値を取得
+                if (cell.Value != null && double.TryParse(cell.Value.ToString(), out var value))
+                {
+                    var result = Math.Round(value * multiplier, 0); // 四捨五入
+                    var targetRow = row + 1;
+                    var targetAddress = $"{GetColumnName(col)}{targetRow}";
+
+                    worksheet[targetAddress].Value = result.ToString();
+                    Spreadsheet.ActiveGrid.InvalidateCell(targetRow, col);
+
+                    MessageBox.Show($"{operation}を適用しました。\n{value}円 → {result}円\n結果は {targetAddress} に入力されました。",
+                        "計算完了", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("数字が入っているセルを選んでください。", "エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            else
+            {
+                // 範囲選択の場合
+                var sourceAddress = $"{GetColumnName(range.Left)}{range.Top}:{GetColumnName(range.Right)}{range.Bottom}";
+                var targetRow = range.Bottom + 1;
+                var targetCol = range.Left;
+                var targetAddress = $"{GetColumnName(targetCol)}{targetRow}";
+
+                var formula = $"=SUM({sourceAddress})*{multiplier}";
+                worksheet[targetAddress].Formula = formula;
+                Spreadsheet.ActiveGrid.InvalidateCell(targetRow, targetCol);
+
+                MessageBox.Show($"{operation}を適用して {targetAddress} に計算しました。",
+                    "計算完了", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"計算に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

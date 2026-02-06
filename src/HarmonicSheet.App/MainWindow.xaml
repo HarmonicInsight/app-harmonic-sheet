@@ -263,6 +263,54 @@
                     </RadioButton.Template>
                 </RadioButton>
 
+                <!-- 困ったときボタン -->
+                <Button Margin="5,20,5,5"
+                        Padding="12"
+                        Cursor="Hand"
+                        Click="OnHelpLineClick"
+                        ToolTip="電話サポート・困ったとき">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#DC2626" Offset="0"/>
+                                        <GradientStop Color="#EF4444" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="12"
+                                                Padding="{TemplateBinding Padding}">
+                                            <Border.Effect>
+                                                <DropShadowEffect Color="#DC2626" BlurRadius="10" ShadowDepth="2" Opacity="0.4"/>
+                                            </Border.Effect>
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="🆘"
+                                   FontSize="28"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="困った"
+                                   FontSize="12"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Button>
+
                 <!-- 設定ボタン -->
                 <Button Content="&#xE713;"
                         FontFamily="Segoe MDL2 Assets"
@@ -271,7 +319,7 @@
                         BorderThickness="0"
                         Foreground="{StaticResource TextSecondaryBrush}"
                         Padding="10"
-                        Margin="5,20,5,5"
+                        Margin="5,10,5,5"
                         Cursor="Hand"
                         HorizontalAlignment="Center"
                         ToolTip="設定"
