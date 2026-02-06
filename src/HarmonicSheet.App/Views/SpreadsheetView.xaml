@@ -345,53 +345,17 @@
                             </StackPanel>
                         </Border>
 
-                        <!-- 計算履歴 -->
-                        <Border Background="#FFFFFF"
-                                BorderBrush="#E7E2DA"
-                                BorderThickness="1"
-                                CornerRadius="4"
+                        <!-- 計算履歴ボタン -->
+                        <Button Content="📝 計算履歴を見る"
+                                FontSize="12"
+                                FontWeight="Bold"
                                 Padding="8"
-                                Margin="0,0,0,10">
-                            <StackPanel>
-                                <Grid Margin="0,0,0,8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0"
-                                               Text="📝 計算履歴"
-                                               FontSize="12"
-                                               FontWeight="Bold"
-                                               Foreground="#57534E"/>
-                                    <Button Grid.Column="1"
-                                            Content="クリア"
-                                            FontSize="10"
-                                            Padding="4,2"
-                                            Background="#DC2626"
-                                            Foreground="White"
-                                            BorderThickness="0"
-                                            Click="OnClearHistoryClick"
-                                            ToolTip="履歴をクリア"/>
-                                </Grid>
-                                <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
-                                    <ListBox x:Name="CalcHistory"
-                                             Background="Transparent"
-                                             BorderThickness="0"
-                                             SelectionMode="Single"
-                                             MouseDoubleClick="OnHistoryItemDoubleClick">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding}"
-                                                           FontSize="11"
-                                                           Foreground="#1C1917"
-                                                           TextWrapping="Wrap"
-                                                           Margin="2"/>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
-                                </ScrollViewer>
-                            </StackPanel>
-                        </Border>
+                                Margin="0,0,0,10"
+                                Background="#B8942F"
+                                Foreground="White"
+                                BorderThickness="0"
+                                Click="OnShowHistoryClick"
+                                ToolTip="計算履歴をダイアログで表示"/>
                     </StackPanel>
 
                     <!-- 入力モード表示エリア -->
