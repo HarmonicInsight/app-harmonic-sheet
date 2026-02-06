@@ -608,9 +608,14 @@ public partial class SpreadsheetView : UserControl
 
 ■ 計算ボタン
 　・合計(SUM): セルを選択して押すと合計を計算
-　・足し算、引き算、掛け算、割り算:
-　　セルを選択して押すと計算式を作成
 　・平均: 選択範囲の平均を計算
+
+■ テンキー
+　右側のテンキーで数字や計算式を簡単に入力できます。
+　・数字ボタン: 選択中のセルに数字を入力
+　・+、-、×、÷: 計算式を作成
+　・=: 計算式の最初に付ける
+　・C: セルの内容をクリア
 
 ■ コマンド入力
 　話しかけるだけで操作できます。
@@ -621,5 +626,143 @@ public partial class SpreadsheetView : UserControl
 　「印刷」ボタンで全てを1ページに収めて印刷できます。";
 
         MessageBox.Show(helpText, "ヘルプ", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    // ========================================
+    // テンキーハンドラー
+    // ========================================
+
+    private void OnNumericKeyClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is string value)
+        {
+            try
+            {
+                var activeCell = Spreadsheet.ActiveGrid.CurrentCell;
+                var worksheet = Spreadsheet.ActiveSheet;
+
+                if (activeCell != null)
+                {
+                    var row = activeCell.RowIndex;
+                    var col = activeCell.ColumnIndex;
+                    var cellAddress = $"{GetColumnName(col)}{row}";
+
+                    // 現在のセルの値を取得
+                    var currentValue = worksheet[cellAddress].Value?.ToString() ?? "";
+
+                    // 数値を追加
+                    var newValue = currentValue + value;
+                    worksheet[cellAddress].Value = newValue;
+                    Spreadsheet.ActiveGrid.InvalidateCell(row, col);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"入力に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
+    private void OnOperatorClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is string op)
+        {
+            try
+            {
+                var activeCell = Spreadsheet.ActiveGrid.CurrentCell;
+                var worksheet = Spreadsheet.ActiveSheet;
+
+                if (activeCell != null)
+                {
+                    var row = activeCell.RowIndex;
+                    var col = activeCell.ColumnIndex;
+                    var cellAddress = $"{GetColumnName(col)}{row}";
+
+                    // 現在のセルの値を取得
+                    var currentValue = worksheet[cellAddress].Value?.ToString() ?? "";
+
+                    // 演算子を追加（計算式として）
+                    string newValue;
+                    if (string.IsNullOrEmpty(currentValue))
+                    {
+                        // 空の場合は = から始める
+                        newValue = "=";
+                    }
+                    else if (!currentValue.StartsWith("="))
+                    {
+                        // 数式でない場合は、=現在値+演算子 にする
+                        newValue = $"={currentValue}{op}";
+                    }
+                    else
+                    {
+                        // すでに数式の場合は演算子を追加
+                        newValue = currentValue + op;
+                    }
+
+                    worksheet[cellAddress].Value = newValue;
+                    Spreadsheet.ActiveGrid.InvalidateCell(row, col);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"演算子の入力に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
+    private void OnEqualsClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var activeCell = Spreadsheet.ActiveGrid.CurrentCell;
+            var worksheet = Spreadsheet.ActiveSheet;
+
+            if (activeCell != null)
+            {
+                var row = activeCell.RowIndex;
+                var col = activeCell.ColumnIndex;
+                var cellAddress = $"{GetColumnName(col)}{row}";
+
+                // 現在のセルの値を取得
+                var currentValue = worksheet[cellAddress].Value?.ToString() ?? "";
+
+                // = を追加（計算式の開始）
+                if (!currentValue.StartsWith("="))
+                {
+                    worksheet[cellAddress].Value = "=" + currentValue;
+                    Spreadsheet.ActiveGrid.InvalidateCell(row, col);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"入力に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnClearClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var activeCell = Spreadsheet.ActiveGrid.CurrentCell;
+            var worksheet = Spreadsheet.ActiveSheet;
+
+            if (activeCell != null)
+            {
+                var row = activeCell.RowIndex;
+                var col = activeCell.ColumnIndex;
+                var cellAddress = $"{GetColumnName(col)}{row}";
+
+                // セルをクリア
+                worksheet[cellAddress].Clear();
+                Spreadsheet.ActiveGrid.InvalidateCell(row, col);
+
+                MessageBox.Show($"{cellAddress} をクリアしました。", "クリア", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"クリアに失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }
