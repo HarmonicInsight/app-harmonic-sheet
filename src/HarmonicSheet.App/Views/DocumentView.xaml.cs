@@ -333,7 +333,7 @@ public partial class DocumentView : UserControl
         // Windows音声入力を起動（Win+H）
         try
         {
-            var speechService = ((App)Application.Current).Services?.GetService(typeof(ISpeechService)) as ISpeechService;
+            var speechService = App.Services?.GetService(typeof(ISpeechService)) as ISpeechService;
             if (speechService != null)
             {
                 speechService.ActivateWindowsVoiceTyping();

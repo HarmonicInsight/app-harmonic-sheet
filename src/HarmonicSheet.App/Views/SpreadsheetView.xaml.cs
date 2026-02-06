@@ -176,25 +176,51 @@ public partial class SpreadsheetView : UserControl
                 return;
             }
 
-            // 印刷設定：全てを1ページに収める
-            var printSettings = new Syncfusion.XlsIO.Implementation.PrintSettingsImpl();
-            printSettings.FitToPagesTall = 1;
-            printSettings.FitToPagesWide = 1;
-            printSettings.IsFitToPage = true;
-
             // 印刷ダイアログを表示
             var printDialog = new System.Windows.Controls.PrintDialog();
             if (printDialog.ShowDialog() == true)
             {
-                // Syncfusion Spreadsheetの印刷機能を使用
-                Spreadsheet.Print();
-                MessageBox.Show("印刷を開始しました。", "印刷", MessageBoxButton.OK, MessageBoxImage.Information);
+                try
+                {
+                    // Workbookを取得してPrintSettingsを設定
+                    var workbook = Spreadsheet.Workbook;
+                    if (workbook != null && workbook.Worksheets.Count > 0)
+                    {
+                        var activeWorksheet = workbook.Worksheets[Spreadsheet.ActiveSheetIndex];
+
+                        // 印刷設定：全てを1ページに収める
+                        activeWorksheet.PageSetup.FitToPagesTall = 1;
+                        activeWorksheet.PageSetup.FitToPagesWide = 1;
+                        activeWorksheet.PageSetup.IsFitToPage = true;
+                    }
+
+                    // 一時ファイルに保存して印刷
+                    var tempFile = Path.Combine(Path.GetTempPath(), $"print_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+                    Spreadsheet.SaveAs(tempFile);
+
+                    MessageBox.Show(
+                        $"印刷プレビューを準備しました。\n\n保存先: {tempFile}\n\nこのファイルをExcelで開いて印刷してください。\n設定: 全体を1ページに収める設定済み",
+                        "印刷準備完了",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+
+                    // ファイルを開く
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = tempFile,
+                        UseShellExecute = true
+                    });
+                }
+                catch
+                {
+                    MessageBox.Show("印刷プレビューを表示できませんでした。", "エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"印刷できませんでした。\nエラー: {ex.Message}\n\n別の方法として、一度Excelファイルとして保存してから印刷することもできます。",
+                $"印刷できませんでした。\nエラー: {ex.Message}\n\n別の方法として、「保存」ボタンでExcelファイルとして保存してから印刷することもできます。",
                 "印刷エラー",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
@@ -558,7 +584,7 @@ public partial class SpreadsheetView : UserControl
         // Windows音声入力を起動（Win+H）
         try
         {
-            var speechService = ((App)Application.Current).Services?.GetService(typeof(ISpeechService)) as ISpeechService;
+            var speechService = App.Services?.GetService(typeof(ISpeechService)) as ISpeechService;
             if (speechService != null)
             {
                 speechService.ActivateWindowsVoiceTyping();
