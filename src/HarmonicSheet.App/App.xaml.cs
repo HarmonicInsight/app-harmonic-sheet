@@ -16,21 +16,40 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        var services = new ServiceCollection();
-        ConfigureServices(services);
-        _serviceProvider = services.BuildServiceProvider();
-        Services = _serviceProvider;
-
-        // 初回起動時はチュートリアルを表示
-        var tutorialService = _serviceProvider.GetRequiredService<ITutorialService>();
-        if (!tutorialService.IsCompleted)
+        try
         {
-            var tutorialWindow = new TutorialWindow(tutorialService);
-            tutorialWindow.ShowDialog();
-        }
+            var services = new ServiceCollection();
+            ConfigureServices(services);
+            _serviceProvider = services.BuildServiceProvider();
+            Services = _serviceProvider;
 
-        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-        mainWindow.Show();
+            // 初回起動時はチュートリアルを表示
+            try
+            {
+                var tutorialService = _serviceProvider.GetRequiredService<ITutorialService>();
+                if (!tutorialService.IsCompleted)
+                {
+                    var tutorialWindow = new TutorialWindow(tutorialService);
+                    tutorialWindow.ShowDialog();
+                }
+            }
+            catch
+            {
+                // チュートリアル表示エラーは無視して起動を続行
+            }
+
+            var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+            mainWindow.Show();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"アプリケーションの起動中にエラーが発生しました。\n\n{ex.Message}",
+                "起動エラー",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            Shutdown();
+        }
     }
 
     private void ConfigureServices(IServiceCollection services)
