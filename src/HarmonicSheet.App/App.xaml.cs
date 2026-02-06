@@ -18,6 +18,9 @@ public partial class App : Application
 
         try
         {
+            // Syncfusionライセンスキーの登録（ある場合）
+            // Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("YOUR_LICENSE_KEY");
+
             var services = new ServiceCollection();
             ConfigureServices(services);
             _serviceProvider = services.BuildServiceProvider();
