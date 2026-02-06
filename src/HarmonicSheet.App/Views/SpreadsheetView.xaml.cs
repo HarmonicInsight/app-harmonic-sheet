@@ -898,12 +898,22 @@ public partial class SpreadsheetView : UserControl
         // Windows音声入力を起動（Win+H）
         try
         {
-            var speechService = App.Services?.GetService(typeof(ISpeechService)) as ISpeechService;
-            if (speechService != null)
+            // まずテキストボックスにフォーカスを設定（Windowsの音声入力に必要）
+            CommandInput.Focus();
+
+            // 少し待ってから音声入力を起動
+            Task.Delay(100).ContinueWith(_ =>
             {
-                speechService.ActivateWindowsVoiceTyping();
-                MessageBox.Show("音声入力を開始しました。\n話し終わったら「停止」と言ってください。", "音声入力", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+                Dispatcher.Invoke(() =>
+                {
+                    var speechService = App.Services?.GetService(typeof(ISpeechService)) as ISpeechService;
+                    if (speechService != null)
+                    {
+                        speechService.ActivateWindowsVoiceTyping();
+                        MessageBox.Show("音声入力を開始しました。\n話し終わったら「停止」と言ってください。", "音声入力", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                });
+            });
         }
         catch (Exception ex)
         {
