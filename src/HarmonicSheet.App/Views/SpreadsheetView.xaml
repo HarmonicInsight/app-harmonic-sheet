@@ -65,6 +65,14 @@
                             <TextBlock Text="印刷"/>
                         </StackPanel>
                     </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#6366F1"
+                            Click="OnHelpClick">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="ヘルプ"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
 
                 <TextBlock Grid.Column="1"
@@ -93,42 +101,6 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE8B2;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
                         <TextBlock Text="合計(SUM)"/>
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#3B82F6"
-                        Click="OnAddClick"
-                        ToolTip="足し算の式を挿入">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="+" FontSize="24" Margin="0,0,6,0"/>
-                        <TextBlock Text="足し算"/>
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#3B82F6"
-                        Click="OnSubtractClick"
-                        ToolTip="引き算の式を挿入">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="-" FontSize="24" Margin="0,0,6,0"/>
-                        <TextBlock Text="引き算"/>
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#3B82F6"
-                        Click="OnMultiplyClick"
-                        ToolTip="掛け算の式を挿入">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="×" FontSize="20" Margin="0,0,6,0"/>
-                        <TextBlock Text="掛け算"/>
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#3B82F6"
-                        Click="OnDivideClick"
-                        ToolTip="割り算の式を挿入">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="÷" FontSize="20" Margin="0,0,6,0"/>
-                        <TextBlock Text="割り算"/>
                     </StackPanel>
                 </Button>
                 <Button Style="{StaticResource ActionButtonStyle}"
@@ -189,27 +161,94 @@
                             Cursor="Hand"
                             ToolTip="音声入力"
                             Click="OnVoiceInputClick"/>
-
-                    <!-- ヘルプボタン -->
-                    <Button Style="{StaticResource ActionButtonStyle}"
-                            Background="#6366F1"
-                            Margin="6,0,0,0"
-                            Click="OnHelpClick">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                            <TextBlock Text="ヘルプ"/>
-                        </StackPanel>
-                    </Button>
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- ========================================== -->
-        <!-- スプレッドシート本体 -->
+        <!-- スプレッドシート本体とテンキー -->
         <!-- ========================================== -->
-        <syncfusion:SfSpreadsheet x:Name="Spreadsheet"
-                                  Grid.Row="3"
-                                  FontSize="16"
-                                  Margin="10"/>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- スプレッドシート本体 -->
+            <syncfusion:SfSpreadsheet x:Name="Spreadsheet"
+                                      Grid.Column="0"
+                                      FontSize="16"
+                                      Margin="10"/>
+
+            <!-- テンキーと計算機能 -->
+            <Border Grid.Column="1"
+                    Width="200"
+                    Background="{StaticResource SurfaceBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1,0,0,0"
+                    Padding="10">
+                <StackPanel>
+                    <TextBlock Text="テンキー"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"
+                               HorizontalAlignment="Center"/>
+
+                    <!-- 数字ボタン（7-9） -->
+                    <UniformGrid Rows="1" Columns="3" Margin="0,0,0,5">
+                        <Button Content="7" Click="OnNumericKeyClick" Tag="7" FontSize="20" Padding="10" Margin="2"/>
+                        <Button Content="8" Click="OnNumericKeyClick" Tag="8" FontSize="20" Padding="10" Margin="2"/>
+                        <Button Content="9" Click="OnNumericKeyClick" Tag="9" FontSize="20" Padding="10" Margin="2"/>
+                    </UniformGrid>
+
+                    <!-- 数字ボタン（4-6） -->
+                    <UniformGrid Rows="1" Columns="3" Margin="0,0,0,5">
+                        <Button Content="4" Click="OnNumericKeyClick" Tag="4" FontSize="20" Padding="10" Margin="2"/>
+                        <Button Content="5" Click="OnNumericKeyClick" Tag="5" FontSize="20" Padding="10" Margin="2"/>
+                        <Button Content="6" Click="OnNumericKeyClick" Tag="6" FontSize="20" Padding="10" Margin="2"/>
+                    </UniformGrid>
+
+                    <!-- 数字ボタン（1-3） -->
+                    <UniformGrid Rows="1" Columns="3" Margin="0,0,0,5">
+                        <Button Content="1" Click="OnNumericKeyClick" Tag="1" FontSize="20" Padding="10" Margin="2"/>
+                        <Button Content="2" Click="OnNumericKeyClick" Tag="2" FontSize="20" Padding="10" Margin="2"/>
+                        <Button Content="3" Click="OnNumericKeyClick" Tag="3" FontSize="20" Padding="10" Margin="2"/>
+                    </UniformGrid>
+
+                    <!-- 数字ボタン（0） -->
+                    <UniformGrid Rows="1" Columns="3" Margin="0,0,0,5">
+                        <Button Content="0" Click="OnNumericKeyClick" Tag="0" FontSize="20" Padding="10" Margin="2" Grid.ColumnSpan="2"/>
+                        <Button Content="." Click="OnNumericKeyClick" Tag="." FontSize="20" Padding="10" Margin="2"/>
+                        <Button Content="00" Click="OnNumericKeyClick" Tag="00" FontSize="20" Padding="10" Margin="2"/>
+                    </UniformGrid>
+
+                    <!-- 区切り線 -->
+                    <Separator Margin="0,10"/>
+
+                    <TextBlock Text="計算"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,5,0,10"
+                               HorizontalAlignment="Center"/>
+
+                    <!-- 四則演算ボタン -->
+                    <UniformGrid Rows="1" Columns="2" Margin="0,0,0,5">
+                        <Button Content="+" Click="OnOperatorClick" Tag="+" FontSize="24" Padding="10" Margin="2" Background="#3B82F6" Foreground="White"/>
+                        <Button Content="-" Click="OnOperatorClick" Tag="-" FontSize="24" Padding="10" Margin="2" Background="#3B82F6" Foreground="White"/>
+                    </UniformGrid>
+
+                    <UniformGrid Rows="1" Columns="2" Margin="0,0,0,5">
+                        <Button Content="×" Click="OnOperatorClick" Tag="*" FontSize="24" Padding="10" Margin="2" Background="#3B82F6" Foreground="White"/>
+                        <Button Content="÷" Click="OnOperatorClick" Tag="/" FontSize="24" Padding="10" Margin="2" Background="#3B82F6" Foreground="White"/>
+                    </UniformGrid>
+
+                    <!-- イコールボタン -->
+                    <Button Content="=" Click="OnEqualsClick" FontSize="24" Padding="10" Margin="2,5,2,2" Background="#10B981" Foreground="White"/>
+
+                    <!-- クリアボタン -->
+                    <Button Content="C (クリア)" Click="OnClearClick" FontSize="16" Padding="10" Margin="2" Background="#EF4444" Foreground="White"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

@@ -63,25 +63,12 @@
                             <TextBlock Text="印刷"/>
                         </StackPanel>
                     </Button>
-
-                    <!-- 区切り -->
-                    <Separator Width="12" Background="Transparent"/>
-
-                    <!-- 読み上げボタン -->
-                    <Button Style="{StaticResource ActionButtonStyle}"
-                            Background="#8B5CF6"
-                            Click="OnReadAloudClick">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE767;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                            <TextBlock Text="読み上げ"/>
-                        </StackPanel>
-                    </Button>
                     <Button Style="{StaticResource ActionButtonStyle}"
                             Background="#6366F1"
-                            Click="OnStopReadingClick">
+                            Click="OnHelpClick">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                            <TextBlock Text="停止"/>
+                            <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="ヘルプ"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -142,17 +129,6 @@
                             Cursor="Hand"
                             ToolTip="音声入力"
                             Click="OnVoiceInputClick"/>
-
-                    <!-- ヘルプボタン -->
-                    <Button Style="{StaticResource ActionButtonStyle}"
-                            Background="#6366F1"
-                            Margin="6,0,0,0"
-                            Click="OnHelpClick">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                            <TextBlock Text="ヘルプ"/>
-                        </StackPanel>
-                    </Button>
                 </StackPanel>
             </Grid>
         </Border>
