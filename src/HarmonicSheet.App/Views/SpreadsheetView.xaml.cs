@@ -31,7 +31,6 @@ public partial class SpreadsheetView : UserControl
 
     // 入力モードの状態
     private string _formulaBuffer = "";
-    private bool _waitingForCellSelect = false;
 
     public SpreadsheetView()
     {
@@ -628,7 +627,7 @@ public partial class SpreadsheetView : UserControl
 　家計簿や名簿を作るときに使います。
 
 ■ 計算ボタン
-　・合計(SUM): セルを選択して押すと合計を計算
+　・合計: セルを選択して押すと合計を計算
 　・平均: 選択範囲の平均を計算
 
 ■ テンキー
@@ -647,6 +646,21 @@ public partial class SpreadsheetView : UserControl
 　「印刷」ボタンで全てを1ページに収めて印刷できます。";
 
         MessageBox.Show(helpText, "ヘルプ", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    private void OnToggleKeypadClick(object sender, RoutedEventArgs e)
+    {
+        // テンキーパネルの表示/非表示を切り替え
+        if (KeypadPanel.Visibility == Visibility.Visible)
+        {
+            KeypadPanel.Visibility = Visibility.Collapsed;
+            BtnToggleKeypad.Content = new TextBlock { Text = "テンキー表示", FontSize = 24, FontWeight = FontWeights.Bold };
+        }
+        else
+        {
+            KeypadPanel.Visibility = Visibility.Visible;
+            BtnToggleKeypad.Content = new TextBlock { Text = "テンキー非表示", FontSize = 24, FontWeight = FontWeights.Bold };
+        }
     }
 
     // ========================================
@@ -807,7 +821,6 @@ public partial class SpreadsheetView : UserControl
             {
                 // 入力モードをクリア
                 _formulaBuffer = "";
-                _waitingForCellSelect = false;
                 CellSelectIndicator.Visibility = Visibility.Collapsed;
                 UpdateFormulaDisplay();
             }
@@ -941,6 +954,31 @@ public partial class SpreadsheetView : UserControl
         catch (Exception ex)
         {
             MessageBox.Show($"セルへのコピーに失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnBackspaceClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (_formulaBuffer.Length > 0)
+            {
+                _formulaBuffer = _formulaBuffer.Substring(0, _formulaBuffer.Length - 1);
+                UpdateFormulaDisplay();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"削除に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnFormulaDisplayTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        // FormulaDisplayの直接編集を_formulaBufferに反映
+        if (sender is System.Windows.Controls.TextBox textBox)
+        {
+            _formulaBuffer = textBox.Text;
         }
     }
 

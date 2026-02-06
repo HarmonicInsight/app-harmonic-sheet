@@ -30,58 +30,71 @@
 
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
                     <Button Style="{StaticResource ActionButtonStyle}"
+                            MinWidth="150"
+                            MinHeight="60"
+                            Padding="20,12"
                             Click="OnRecentClick"
                             ToolTip="最近使ったファイル">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                            <TextBlock Text="前回使用"/>
-                        </StackPanel>
+                        <TextBlock Text="前回使用" FontSize="24" FontWeight="Bold"/>
                     </Button>
                     <Button Style="{StaticResource ActionButtonStyle}"
+                            MinWidth="150"
+                            MinHeight="60"
+                            Padding="20,12"
                             Click="OnNewClick">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                            <TextBlock Text="新規"/>
-                        </StackPanel>
+                        <TextBlock Text="新規" FontSize="24" FontWeight="Bold"/>
                     </Button>
                     <Button Style="{StaticResource ActionButtonStyle}"
+                            MinWidth="150"
+                            MinHeight="60"
+                            Padding="20,12"
                             Click="OnOpenClick">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                            <TextBlock Text="開く"/>
-                        </StackPanel>
+                        <TextBlock Text="開く" FontSize="24" FontWeight="Bold"/>
                     </Button>
                     <Button Style="{StaticResource ActionButtonStyle}"
+                            MinWidth="150"
+                            MinHeight="60"
+                            Padding="20,12"
                             Click="OnSaveClick">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                            <TextBlock Text="保存"/>
-                        </StackPanel>
+                        <TextBlock Text="保存" FontSize="24" FontWeight="Bold"/>
                     </Button>
                     <Button Style="{StaticResource ActionButtonStyle}"
+                            MinWidth="150"
+                            MinHeight="60"
+                            Padding="20,12"
                             Click="OnPrintClick">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE749;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                            <TextBlock Text="印刷"/>
-                        </StackPanel>
+                        <TextBlock Text="印刷" FontSize="24" FontWeight="Bold"/>
                     </Button>
                     <Button Style="{StaticResource ActionButtonStyle}"
                             Background="#6366F1"
+                            MinWidth="150"
+                            MinHeight="60"
+                            Padding="20,12"
                             Click="OnHelpClick">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                            <TextBlock Text="ヘルプ"/>
-                        </StackPanel>
+                        <TextBlock Text="ヘルプ" FontSize="24" FontWeight="Bold"/>
+                    </Button>
+                    <Button x:Name="BtnToggleKeypad"
+                            Style="{StaticResource ActionButtonStyle}"
+                            Background="#8B5CF6"
+                            MinWidth="150"
+                            MinHeight="60"
+                            Padding="20,12"
+                            Click="OnToggleKeypadClick"
+                            ToolTip="テンキーを表示/非表示">
+                        <TextBlock Text="テンキー" FontSize="24" FontWeight="Bold"/>
                     </Button>
                 </StackPanel>
 
-                <TextBlock Grid.Column="1"
-                           Text="例: 「A2に1万円入れて」「A1からA3を足してA4に」"
-                           FontSize="16"
-                           Foreground="{StaticResource TextSecondaryBrush}"
+                <StackPanel Grid.Column="1"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Right"
-                           Margin="10,0"/>
+                           Margin="10,0">
+                    <TextBlock Text="例: 「A2に1万円入れて」"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextBrush}"
+                               HorizontalAlignment="Right"/>
+                </StackPanel>
             </Grid>
         </Border>
 
@@ -96,21 +109,21 @@
             <WrapPanel Orientation="Horizontal">
                 <Button Style="{StaticResource ActionButtonStyle}"
                         Background="#10B981"
+                        MinWidth="200"
+                        MinHeight="60"
+                        Padding="20,12"
                         Click="OnSumClick"
                         ToolTip="選択範囲の合計を計算">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE8B2;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                        <TextBlock Text="合計(SUM)"/>
-                    </StackPanel>
+                    <TextBlock Text="合計" FontSize="24" FontWeight="Bold"/>
                 </Button>
                 <Button Style="{StaticResource ActionButtonStyle}"
                         Background="#8B5CF6"
+                        MinWidth="200"
+                        MinHeight="60"
+                        Padding="20,12"
                         Click="OnAverageClick"
                         ToolTip="選択範囲の平均を計算">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE8EF;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                        <TextBlock Text="平均"/>
-                    </StackPanel>
+                    <TextBlock Text="平均" FontSize="24" FontWeight="Bold"/>
                 </Button>
             </WrapPanel>
         </Border>
@@ -132,35 +145,24 @@
                 <TextBox x:Name="CommandInput"
                          Grid.Column="0"
                          Style="{StaticResource LargeTextBoxStyle}"
+                         FontSize="28"
                          AcceptsReturn="True"
                          TextWrapping="Wrap"
-                         MinHeight="50"
-                         MaxHeight="100"
+                         MinHeight="80"
+                         MaxHeight="150"
                          VerticalScrollBarVisibility="Auto"
                          KeyDown="OnCommandKeyDown"/>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,0,0">
                     <Button Style="{StaticResource ActionButtonStyle}"
-                            MaxWidth="100"
+                            MinWidth="150"
+                            MinHeight="70"
                             Click="OnExecuteCommand">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                            <TextBlock Text="実行"/>
+                            <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="28" Margin="0,0,8,0"/>
+                            <TextBlock Text="実行" FontSize="28" FontWeight="Bold"/>
                         </StackPanel>
                     </Button>
-
-                    <!-- 音声入力ボタン（小さく） -->
-                    <Button Content="&#xE720;"
-                            FontFamily="Segoe MDL2 Assets"
-                            FontSize="16"
-                            Background="Transparent"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
-                            Padding="8"
-                            Margin="6,0,0,0"
-                            Cursor="Hand"
-                            ToolTip="音声入力"
-                            Click="OnVoiceInputClick"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -177,16 +179,18 @@
             <!-- スプレッドシート本体 -->
             <syncfusion:SfSpreadsheet x:Name="Spreadsheet"
                                       Grid.Column="0"
-                                      FontSize="16"
+                                      FontSize="24"
                                       Margin="10"/>
 
             <!-- テンキーと計算機能 -->
-<Border Grid.Column="1"
+<Border x:Name="KeypadPanel"
+                    Grid.Column="1"
                     Width="260"
                     Background="#F3F0EB"
                     BorderBrush="#E7E2DA"
                     BorderThickness="1,0,0,0"
-                    Padding="10">
+                    Padding="10"
+                    Visibility="Collapsed">
                 <StackPanel>
                     <!-- モード切り替えボタン -->
                     <Border Background="#FFFFFF"
@@ -283,26 +287,45 @@
                                          Foreground="#1C1917"
                                          Background="Transparent"
                                          BorderThickness="0"
-                                         IsReadOnly="True"
+                                         IsReadOnly="False"
                                          TextAlignment="Left"
                                          Text=""
                                          Padding="4"
                                          TextWrapping="Wrap"
-                                         MinHeight="50"/>
-                                <Button x:Name="BtnCellSelect"
-                                        Content="📍 セルを選択"
-                                        FontSize="12"
-                                        Padding="6,4"
-                                        Margin="0,4,0,2"
-                                        Background="#2563EB"
-                                        Foreground="White"
-                                        BorderThickness="0"
-                                        Click="OnCellSelectClick"
-                                        ToolTip="セルをクリックして式に追加"/>
+                                         MinHeight="50"
+                                         TextChanged="OnFormulaDisplayTextChanged"
+                                         ToolTip="直接編集できます"/>
+                                <Grid Margin="0,4,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button x:Name="BtnCellSelect"
+                                            Grid.Column="0"
+                                            Content="📍 セル選択"
+                                            FontSize="12"
+                                            Padding="6,4"
+                                            Margin="0,0,2,0"
+                                            Background="#2563EB"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            Click="OnCellSelectClick"
+                                            ToolTip="セルをクリックして式に追加"/>
+                                    <Button Grid.Column="1"
+                                            Content="← 削除"
+                                            FontSize="12"
+                                            Padding="6,4"
+                                            Margin="2,0,0,0"
+                                            Background="#DC2626"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            Click="OnBackspaceClick"
+                                            ToolTip="最後の文字を削除"/>
+                                </Grid>
                                 <Button Content="✓ 式を確定"
                                         FontSize="12"
                                         Padding="6,4"
-                                        Margin="0,2,0,0"
+                                        Margin="0,4,0,0"
                                         Background="#16A34A"
                                         Foreground="White"
                                         BorderThickness="0"
@@ -328,13 +351,6 @@
                                        TextWrapping="Wrap"/>
                         </Border>
                     </StackPanel>
-
-                    <TextBlock Text="テンキー"
-                               FontSize="14"
-                               Foreground="#1C1917"
-                               FontWeight="Bold"
-                               Margin="0,0,0,10"
-                               HorizontalAlignment="Center"/>
 
                     <!-- 数字ボタン（7-9） -->
                     <UniformGrid Rows="1" Columns="3" Margin="0,0,0,5">
@@ -367,14 +383,7 @@
                     <!-- 区切り線 -->
                     <Separator Margin="0,10"/>
 
-                    <!-- 演算子ボタン -->
-                    <TextBlock Text="演算子"
-                               FontSize="12"
-                               Foreground="#57534E"
-                               Margin="0,5,0,8"
-                               HorizontalAlignment="Center"/>
-
-                    <UniformGrid Rows="2" Columns="2" Margin="0,0,0,10">
+                    <UniformGrid Rows="2" Columns="2" Margin="0,5,0,10">
                         <Button Content="+" Click="OnOperatorClick" Tag="+" FontSize="28" FontWeight="Bold" Padding="12" Margin="2" Background="#2563EB" Foreground="White" BorderThickness="0" ToolTip="足し算"/>
                         <Button Content="-" Click="OnOperatorClick" Tag="-" FontSize="28" FontWeight="Bold" Padding="12" Margin="2" Background="#2563EB" Foreground="White" BorderThickness="0" ToolTip="引き算"/>
                         <Button Content="×" Click="OnOperatorClick" Tag="*" FontSize="28" FontWeight="Bold" Padding="12" Margin="2" Background="#2563EB" Foreground="White" BorderThickness="0" ToolTip="掛け算"/>
