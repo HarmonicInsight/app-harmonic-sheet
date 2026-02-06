@@ -9,91 +9,182 @@
         Background="{StaticResource BackgroundBrush}">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <!-- ヘッダー（タブ切り替え） -->
-            <RowDefinition Height="Auto"/>
+        <Grid.ColumnDefinitions>
+            <!-- 左サイドバー（タブ切り替え） -->
+            <ColumnDefinition Width="Auto"/>
             <!-- メインコンテンツ -->
-            <RowDefinition Height="*"/>
-            <!-- フッター（音声入力・ヘルプ） -->
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
         <!-- ========================================== -->
-        <!-- ヘッダー: 大きなタブボタン -->
+        <!-- 左サイドバー: タブボタン縦並び -->
         <!-- ========================================== -->
-        <Border Grid.Row="0"
+        <Border Grid.Column="0"
                 Background="{StaticResource SurfaceBrush}"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,2"
-                Padding="10,8">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
+                BorderThickness="0,0,2,0"
+                Width="100">
+            <StackPanel>
                 <!-- ロゴ -->
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="HarmonicOffice"
-                               Style="{StaticResource LargeTextStyle}"
+                <Border BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Padding="5">
+                    <TextBlock Text="HO"
+                               FontSize="20"
+                               FontWeight="Bold"
                                Foreground="{StaticResource PrimaryBrush}"
-                               Margin="0,0,15,0"/>
-                </StackPanel>
+                               HorizontalAlignment="Center"
+                               ToolTip="HarmonicOffice"/>
+                </Border>
 
-                <!-- タブボタン -->
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Center">
-                    <RadioButton x:Name="TabDocument"
-                                 Style="{StaticResource TabButtonStyle}"
-                                 IsChecked="True"
-                                 Checked="OnTabChanged"
-                                 GroupName="MainTabs">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,8,0"/>
-                            <TextBlock Text="文書"/>
-                        </StackPanel>
-                    </RadioButton>
-                    <RadioButton x:Name="TabSpreadsheet"
-                                 Style="{StaticResource TabButtonStyle}"
-                                 Checked="OnTabChanged"
-                                 GroupName="MainTabs">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,8,0"/>
-                            <TextBlock Text="表"/>
-                        </StackPanel>
-                    </RadioButton>
-                    <RadioButton x:Name="TabMail"
-                                 Style="{StaticResource TabButtonStyle}"
-                                 Checked="OnTabChanged"
-                                 GroupName="MainTabs">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE715;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,8,0"/>
-                            <TextBlock Text="メール"/>
-                        </StackPanel>
-                    </RadioButton>
-                </StackPanel>
+                <!-- タブボタン（縦並び） -->
+                <RadioButton x:Name="TabDocument"
+                             IsChecked="True"
+                             Checked="OnTabChanged"
+                             GroupName="MainTabs"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="10"
+                             Margin="5,10,5,5"
+                             Cursor="Hand">
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="{TemplateBinding Padding}">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="&#xE8A5;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="28"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="文書"
+                                               FontSize="14"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,5,0,0"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="#F3F4F6"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+
+                <RadioButton x:Name="TabSpreadsheet"
+                             Checked="OnTabChanged"
+                             GroupName="MainTabs"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="10"
+                             Margin="5"
+                             Cursor="Hand">
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="{TemplateBinding Padding}">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="&#xE80A;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="28"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="表"
+                                               FontSize="14"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,5,0,0"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="#F3F4F6"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+
+                <RadioButton x:Name="TabMail"
+                             Checked="OnTabChanged"
+                             GroupName="MainTabs"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="10"
+                             Margin="5"
+                             Cursor="Hand">
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="{TemplateBinding Padding}">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="&#xE715;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="28"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="メール"
+                                               FontSize="14"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,5,0,0"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="#F3F4F6"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
 
                 <!-- 設定ボタン -->
-                <Button Grid.Column="2"
-                        Content="&#xE713;"
+                <Button Content="&#xE713;"
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="24"
                         Background="Transparent"
                         BorderThickness="0"
                         Foreground="{StaticResource TextSecondaryBrush}"
                         Padding="10"
+                        Margin="5,20,5,5"
                         Cursor="Hand"
+                        HorizontalAlignment="Center"
                         ToolTip="設定"
                         Click="OnSettingsClick"/>
-            </Grid>
+            </StackPanel>
         </Border>
 
         <!-- ========================================== -->
         <!-- メインコンテンツ -->
         <!-- ========================================== -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Column="1">
             <!-- 文書ビュー -->
             <views:DocumentView x:Name="DocumentView"
                                 Visibility="Visible"/>
@@ -104,54 +195,5 @@
             <views:MailView x:Name="MailView"
                             Visibility="Collapsed"/>
         </Grid>
-
-        <!-- ========================================== -->
-        <!-- フッター: 音声入力・状態表示 -->
-        <!-- ========================================== -->
-        <Border Grid.Row="2"
-                Background="{StaticResource SurfaceBrush}"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,2,0,0"
-                Padding="10,8">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- 左: 状態表示 -->
-                <TextBlock x:Name="StatusText"
-                           Grid.Column="0"
-                           Text="準備完了"
-                           Style="{StaticResource BaseTextStyle}"
-                           VerticalAlignment="Center"/>
-
-                <!-- 中央: 音声入力ボタン -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button x:Name="VoiceButton"
-                            Style="{StaticResource VoiceButtonStyle}"
-                            Content="&#xE720;"
-                            ToolTip="音声入力（クリックして話す）"
-                            Click="OnVoiceInputClick"/>
-                    <TextBlock Text="音声入力"
-                               Style="{StaticResource BaseTextStyle}"
-                               VerticalAlignment="Center"
-                               Margin="10,0,0,0"/>
-                </StackPanel>
-
-                <!-- 右: ヘルプボタン -->
-                <Button Grid.Column="2"
-                        HorizontalAlignment="Right"
-                        Style="{StaticResource ActionButtonStyle}"
-                        Background="#6366F1"
-                        Click="OnHelpClick">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,8,0"/>
-                        <TextBlock Text="ヘルプ"/>
-                    </StackPanel>
-                </Button>
-            </Grid>
-        </Border>
     </Grid>
 </Window>

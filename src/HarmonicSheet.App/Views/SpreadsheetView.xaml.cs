@@ -169,19 +169,33 @@ public partial class SpreadsheetView : UserControl
     {
         try
         {
-            // SfSpreadsheet doesn't have a direct Print method
-            // For now, show a message that printing requires saving to Excel first
-            MessageBox.Show(
-                "表の印刷をするには、一度Excelファイルとして保存してから、Excelで開いて印刷してください。",
-                "印刷について",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            var worksheet = Spreadsheet.ActiveSheet;
+            if (worksheet == null)
+            {
+                MessageBox.Show("印刷するシートがありません。", "印刷", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // 印刷設定：全てを1ページに収める
+            var printSettings = new Syncfusion.XlsIO.Implementation.PrintSettingsImpl();
+            printSettings.FitToPagesTall = 1;
+            printSettings.FitToPagesWide = 1;
+            printSettings.IsFitToPage = true;
+
+            // 印刷ダイアログを表示
+            var printDialog = new System.Windows.Controls.PrintDialog();
+            if (printDialog.ShowDialog() == true)
+            {
+                // Syncfusion Spreadsheetの印刷機能を使用
+                Spreadsheet.Print();
+                MessageBox.Show("印刷を開始しました。", "印刷", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"印刷できませんでした。\n{ex.Message}",
-                "エラー",
+                $"印刷できませんでした。\nエラー: {ex.Message}\n\n別の方法として、一度Excelファイルとして保存してから印刷することもできます。",
+                "印刷エラー",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
@@ -384,5 +398,201 @@ public partial class SpreadsheetView : UserControl
             File.WriteAllLines(RecentFilesPath, filesToSave);
         }
         catch { }
+    }
+
+    // ========================================
+    // 計算ボタンのハンドラー
+    // ========================================
+
+    private void OnSumClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var selectedRanges = Spreadsheet.ActiveGrid.SelectedRanges;
+            if (selectedRanges == null || selectedRanges.Count == 0)
+            {
+                MessageBox.Show("セルを選択してから合計ボタンを押してください。", "合計", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var range = selectedRanges[0];
+            var worksheet = Spreadsheet.ActiveSheet;
+
+            // 選択範囲の下または右に結果を出力
+            var targetRow = range.Bottom + 1;
+            var targetCol = range.Left;
+
+            var rangeAddress = $"{GetColumnName(range.Left)}{range.Top}:{GetColumnName(range.Right)}{range.Bottom}";
+            var formula = $"=SUM({rangeAddress})";
+
+            worksheet[$"{GetColumnName(targetCol)}{targetRow}"].Formula = formula;
+            Spreadsheet.ActiveGrid.InvalidateCell(targetRow, targetCol);
+
+            MessageBox.Show($"合計を {GetColumnName(targetCol)}{targetRow} に計算しました。", "合計", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"合計の計算に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnAddClick(object sender, RoutedEventArgs e)
+    {
+        InsertFormulaOperation("+", "足し算");
+    }
+
+    private void OnSubtractClick(object sender, RoutedEventArgs e)
+    {
+        InsertFormulaOperation("-", "引き算");
+    }
+
+    private void OnMultiplyClick(object sender, RoutedEventArgs e)
+    {
+        InsertFormulaOperation("*", "掛け算");
+    }
+
+    private void OnDivideClick(object sender, RoutedEventArgs e)
+    {
+        InsertFormulaOperation("/", "割り算");
+    }
+
+    private void OnAverageClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var selectedRanges = Spreadsheet.ActiveGrid.SelectedRanges;
+            if (selectedRanges == null || selectedRanges.Count == 0)
+            {
+                MessageBox.Show("セルを選択してから平均ボタンを押してください。", "平均", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var range = selectedRanges[0];
+            var worksheet = Spreadsheet.ActiveSheet;
+
+            // 選択範囲の下または右に結果を出力
+            var targetRow = range.Bottom + 1;
+            var targetCol = range.Left;
+
+            var rangeAddress = $"{GetColumnName(range.Left)}{range.Top}:{GetColumnName(range.Right)}{range.Bottom}";
+            var formula = $"=AVERAGE({rangeAddress})";
+
+            worksheet[$"{GetColumnName(targetCol)}{targetRow}"].Formula = formula;
+            Spreadsheet.ActiveGrid.InvalidateCell(targetRow, targetCol);
+
+            MessageBox.Show($"平均を {GetColumnName(targetCol)}{targetRow} に計算しました。", "平均", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"平均の計算に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void InsertFormulaOperation(string operation, string operationName)
+    {
+        try
+        {
+            var selectedRanges = Spreadsheet.ActiveGrid.SelectedRanges;
+            if (selectedRanges == null || selectedRanges.Count == 0)
+            {
+                MessageBox.Show($"2つ以上のセルを選択してから{operationName}ボタンを押してください。", operationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var range = selectedRanges[0];
+            if ((range.Right - range.Left + 1) * (range.Bottom - range.Top + 1) < 2)
+            {
+                MessageBox.Show($"2つ以上のセルを選択してください。", operationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var worksheet = Spreadsheet.ActiveSheet;
+            var cells = new List<string>();
+
+            // 選択範囲のセルアドレスを収集
+            for (int row = range.Top; row <= range.Bottom; row++)
+            {
+                for (int col = range.Left; col <= range.Right; col++)
+                {
+                    cells.Add($"{GetColumnName(col)}{row}");
+                }
+            }
+
+            // 数式を作成
+            var formula = "=" + string.Join(operation, cells);
+
+            // 選択範囲の次のセルに結果を出力
+            var targetRow = range.Bottom + 1;
+            var targetCol = range.Left;
+
+            worksheet[$"{GetColumnName(targetCol)}{targetRow}"].Formula = formula;
+            Spreadsheet.ActiveGrid.InvalidateCell(targetRow, targetCol);
+
+            MessageBox.Show($"{operationName}の結果を {GetColumnName(targetCol)}{targetRow} に計算しました。", operationName, MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"{operationName}の計算に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private string GetColumnName(int columnIndex)
+    {
+        // 列番号をアルファベットに変換（1=A, 2=B, ...）
+        if (columnIndex <= 0) return "A";
+        if (columnIndex <= 26) return ((char)('A' + columnIndex - 1)).ToString();
+
+        // 26以上の場合（AA, AB, ...）
+        var result = "";
+        while (columnIndex > 0)
+        {
+            var remainder = (columnIndex - 1) % 26;
+            result = (char)('A' + remainder) + result;
+            columnIndex = (columnIndex - 1) / 26;
+        }
+        return result;
+    }
+
+    private void OnVoiceInputClick(object sender, RoutedEventArgs e)
+    {
+        // Windows音声入力を起動（Win+H）
+        try
+        {
+            var speechService = ((App)Application.Current).Services?.GetService(typeof(ISpeechService)) as ISpeechService;
+            if (speechService != null)
+            {
+                speechService.ActivateWindowsVoiceTyping();
+                MessageBox.Show("音声入力を開始しました。\n話し終わったら「停止」と言ってください。", "音声入力", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"音声入力を開始できませんでした。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnHelpClick(object sender, RoutedEventArgs e)
+    {
+        var helpText = @"【表モードの使い方】
+
+■ 基本操作
+　数字を入れて計算ができます。
+　家計簿や名簿を作るときに使います。
+
+■ 計算ボタン
+　・合計(SUM): セルを選択して押すと合計を計算
+　・足し算、引き算、掛け算、割り算:
+　　セルを選択して押すと計算式を作成
+　・平均: 選択範囲の平均を計算
+
+■ コマンド入力
+　話しかけるだけで操作できます。
+　例：「A2に1万円入れて」
+　　　「A1からA3を足してA4に」
+
+■ 印刷
+　「印刷」ボタンで全てを1ページに収めて印刷できます。";
+
+        MessageBox.Show(helpText, "ヘルプ", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 }

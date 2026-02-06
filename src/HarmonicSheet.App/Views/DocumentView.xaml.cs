@@ -66,7 +66,6 @@ public partial class DocumentView : UserControl
                     RichTextEditor.Document.Sections.Add(section);
                 }
                 _currentFilePath = recentFiles[0];
-                FileNameText.Text = Path.GetFileName(recentFiles[0]);
             }
             catch (Exception ex)
             {
@@ -87,7 +86,6 @@ public partial class DocumentView : UserControl
         {
             RichTextEditor.Document.Sections.Clear();
             _currentFilePath = null;
-            FileNameText.Text = "新しい文書";
         }
     }
 
@@ -124,7 +122,6 @@ public partial class DocumentView : UserControl
                 }
 
                 _currentFilePath = dialog.FileName;
-                FileNameText.Text = Path.GetFileName(dialog.FileName);
                 AddToRecentFiles(dialog.FileName);
             }
             catch (Exception ex)
@@ -166,7 +163,6 @@ public partial class DocumentView : UserControl
                 }
 
                 _currentFilePath = dialog.FileName;
-                FileNameText.Text = Path.GetFileName(dialog.FileName);
                 AddToRecentFiles(dialog.FileName);
             }
             catch (Exception ex)
@@ -330,5 +326,44 @@ public partial class DocumentView : UserControl
             File.WriteAllLines(RecentFilesPath, filesToSave);
         }
         catch { }
+    }
+
+    private void OnVoiceInputClick(object sender, RoutedEventArgs e)
+    {
+        // Windows音声入力を起動（Win+H）
+        try
+        {
+            var speechService = ((App)Application.Current).Services?.GetService(typeof(ISpeechService)) as ISpeechService;
+            if (speechService != null)
+            {
+                speechService.ActivateWindowsVoiceTyping();
+                MessageBox.Show("音声入力を開始しました。\n話し終わったら「停止」と言ってください。", "音声入力", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"音声入力を開始できませんでした。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnHelpClick(object sender, RoutedEventArgs e)
+    {
+        var helpText = @"【文書モードの使い方】
+
+■ 基本操作
+　文章を書くことができます。
+　手紙や報告書を作るときに使います。
+
+■ コマンド入力
+　AIに話しかけて文章を編集できます。
+　例：「挨拶文を追加して」「敬語に直して」
+
+■ 印刷
+　「印刷」ボタンで印刷できます。
+
+■ 音声入力
+　マイクボタンを押すと声で文字を入力できます。";
+
+        MessageBox.Show(helpText, "ヘルプ", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 }

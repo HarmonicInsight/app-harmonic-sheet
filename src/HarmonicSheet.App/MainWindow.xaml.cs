@@ -21,7 +21,7 @@ public partial class MainWindow : Window
     private void OnTabChanged(object sender, RoutedEventArgs e)
     {
         // 初期化が完了していない場合は何もしない
-        if (DocumentView == null || SpreadsheetView == null || MailView == null || StatusText == null)
+        if (DocumentView == null || SpreadsheetView == null || MailView == null)
             return;
 
         // 全てのビューを非表示に
@@ -33,25 +33,15 @@ public partial class MainWindow : Window
         if (TabDocument.IsChecked == true)
         {
             DocumentView.Visibility = Visibility.Visible;
-            StatusText.Text = "文書モード - 文章を書きましょう";
         }
         else if (TabSpreadsheet.IsChecked == true)
         {
             SpreadsheetView.Visibility = Visibility.Visible;
-            StatusText.Text = "表モード - 数字を入れたり計算できます";
         }
         else if (TabMail.IsChecked == true)
         {
             MailView.Visibility = Visibility.Visible;
-            StatusText.Text = "メールモード - メールを送ったり読んだりできます";
         }
-    }
-
-    private void OnVoiceInputClick(object sender, RoutedEventArgs e)
-    {
-        // Windows音声入力を起動（Win+H）
-        _speechService.ActivateWindowsVoiceTyping();
-        StatusText.Text = "音声入力中... 話し終わったらもう一度クリック";
     }
 
     private void OnSettingsClick(object sender, RoutedEventArgs e)
