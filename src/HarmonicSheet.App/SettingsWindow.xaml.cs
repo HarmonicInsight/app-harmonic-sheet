@@ -192,7 +192,6 @@ public partial class SettingsWindow : Window
         DialogResult = false;
         Close();
     }
-}
 
     private void OnThemeChanged(object sender, SelectionChangedEventArgs e)
     {
