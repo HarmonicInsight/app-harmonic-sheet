@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,6 +10,11 @@ namespace HarmonicSheet.Views;
 
 public partial class SpreadsheetView : UserControl
 {
+    private static readonly string RecentFilesPath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "HarmonicSheet",
+        "recent_spreadsheets.txt");
+
     public SpreadsheetView()
     {
         InitializeComponent();
@@ -30,7 +36,7 @@ public partial class SpreadsheetView : UserControl
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Spreadsheet initialization error: {ex.Message}");
-            StatusText.Text = $"表の初期化に失敗しました: {ex.Message}";
+            MessageBox.Show($"表の初期化に失敗しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -60,6 +66,37 @@ public partial class SpreadsheetView : UserControl
         }
     }
 
+    private void OnRecentClick(object sender, RoutedEventArgs e)
+    {
+        var recentFiles = LoadRecentFiles();
+        if (recentFiles.Count == 0)
+        {
+            MessageBox.Show("最近使用したファイルはありません。", "前回使用", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        // 簡易的なファイル選択ダイアログ
+        var message = "最近使用したファイル:\n\n";
+        for (int i = 0; i < Math.Min(5, recentFiles.Count); i++)
+        {
+            message += $"{i + 1}. {Path.GetFileName(recentFiles[i])}\n";
+        }
+        message += "\n最新のファイルを開きますか？";
+
+        var result = MessageBox.Show(message, "前回使用", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (result == MessageBoxResult.Yes && File.Exists(recentFiles[0]))
+        {
+            try
+            {
+                Spreadsheet.Open(recentFiles[0]);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ファイルを開けませんでした。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
     private void OnNewClick(object sender, RoutedEventArgs e)
     {
         var result = MessageBox.Show(
@@ -72,7 +109,6 @@ public partial class SpreadsheetView : UserControl
         {
             Spreadsheet.Create(1);
             ConfigureForSeniors();
-            StatusText.Text = "新しい表を作りました";
         }
     }
 
@@ -89,7 +125,7 @@ public partial class SpreadsheetView : UserControl
             try
             {
                 Spreadsheet.Open(dialog.FileName);
-                StatusText.Text = $"ファイルを開きました: {System.IO.Path.GetFileName(dialog.FileName)}";
+                AddToRecentFiles(dialog.FileName);
             }
             catch (Exception ex)
             {
@@ -116,7 +152,7 @@ public partial class SpreadsheetView : UserControl
             try
             {
                 Spreadsheet.SaveAs(dialog.FileName);
-                StatusText.Text = $"保存しました: {System.IO.Path.GetFileName(dialog.FileName)}";
+                AddToRecentFiles(dialog.FileName);
             }
             catch (Exception ex)
             {
@@ -140,7 +176,6 @@ public partial class SpreadsheetView : UserControl
                 "印刷について",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
-            StatusText.Text = "印刷するにはExcelファイルとして保存してください";
         }
         catch (Exception ex)
         {
@@ -154,9 +189,10 @@ public partial class SpreadsheetView : UserControl
 
     private void OnCommandKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        if (e.Key == Key.Enter && !Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
         {
             OnExecuteCommand(sender, e);
+            e.Handled = true;
         }
     }
 
@@ -165,22 +201,19 @@ public partial class SpreadsheetView : UserControl
         var command = CommandInput.Text?.Trim();
         if (string.IsNullOrEmpty(command))
         {
-            StatusText.Text = "やりたいことを入力してください";
             return;
         }
-
-        StatusText.Text = "処理中...";
 
         try
         {
             // 簡易的な自然言語パース（Claude APIが使えない場合のフォールバック）
             var result = ParseAndExecuteCommand(command);
-            StatusText.Text = result;
+            MessageBox.Show(result, "実行結果", MessageBoxButton.OK, MessageBoxImage.Information);
             CommandInput.Text = string.Empty;
         }
         catch (Exception ex)
         {
-            StatusText.Text = $"エラー: {ex.Message}";
+            MessageBox.Show($"エラー: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -314,5 +347,42 @@ public partial class SpreadsheetView : UserControl
         Spreadsheet.ActiveGrid.InvalidateCell(rowIndex, colIndex);
 
         return $"{string.Join("と", sourceCells)} を足して {targetCell} に入れました";
+    }
+
+    private List<string> LoadRecentFiles()
+    {
+        try
+        {
+            if (File.Exists(RecentFilesPath))
+            {
+                return File.ReadAllLines(RecentFilesPath)
+                    .Where(f => File.Exists(f))
+                    .ToList();
+            }
+        }
+        catch { }
+        return new List<string>();
+    }
+
+    private void AddToRecentFiles(string filePath)
+    {
+        try
+        {
+            var recentFiles = LoadRecentFiles();
+            recentFiles.Remove(filePath); // 既存を削除
+            recentFiles.Insert(0, filePath); // 先頭に追加
+
+            // 最大10件まで保持
+            var filesToSave = recentFiles.Take(10).ToList();
+
+            var directory = Path.GetDirectoryName(RecentFilesPath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            File.WriteAllLines(RecentFilesPath, filesToSave);
+        }
+        catch { }
     }
 }
