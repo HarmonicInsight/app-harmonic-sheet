@@ -9,7 +9,6 @@ namespace HarmonicSheet.Views;
 
 public partial class DocumentView : UserControl
 {
-    private readonly ISpeechService? _speechService;
     private string? _currentFilePath;
 
     public DocumentView()

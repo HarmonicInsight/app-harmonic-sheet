@@ -9,9 +9,6 @@ namespace HarmonicSheet.Views;
 
 public partial class SpreadsheetView : UserControl
 {
-    private readonly IClaudeService? _claudeService;
-    private readonly IPrintService? _printService;
-
     public SpreadsheetView()
     {
         InitializeComponent();
@@ -22,8 +19,8 @@ public partial class SpreadsheetView : UserControl
             // サービスは後で設定される
         }
 
-        // 新規ワークブックを作成
-        Spreadsheet.Create();
+        // 新規ワークブックを作成（1シート）
+        Spreadsheet.Create(1);
 
         // シニア向けの大きなフォント設定
         ConfigureForSeniors();
@@ -65,7 +62,7 @@ public partial class SpreadsheetView : UserControl
 
         if (result == MessageBoxResult.Yes)
         {
-            Spreadsheet.Create();
+            Spreadsheet.Create(1);
             ConfigureForSeniors();
             StatusText.Text = "新しい表を作りました";
         }
@@ -155,7 +152,7 @@ public partial class SpreadsheetView : UserControl
         }
     }
 
-    private async void OnExecuteCommand(object sender, RoutedEventArgs e)
+    private void OnExecuteCommand(object sender, RoutedEventArgs e)
     {
         var command = CommandInput.Text?.Trim();
         if (string.IsNullOrEmpty(command))
