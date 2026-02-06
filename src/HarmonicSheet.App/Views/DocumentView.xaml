@@ -12,8 +12,6 @@
             <RowDefinition Height="Auto"/>
             <!-- ドキュメント本体 -->
             <RowDefinition Height="*"/>
-            <!-- ステータスバー -->
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- ========================================== -->
@@ -122,16 +120,40 @@
                          VerticalScrollBarVisibility="Auto"
                          KeyDown="OnCommandKeyDown"/>
 
-                <Button Grid.Column="1"
-                        Style="{StaticResource ActionButtonStyle}"
-                        Margin="8,0,0,0"
-                        MaxWidth="100"
-                        Click="OnExecuteCommand">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                        <TextBlock Text="実行"/>
-                    </StackPanel>
-                </Button>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,0,0">
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            MaxWidth="100"
+                            Click="OnExecuteCommand">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="実行"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- 音声入力ボタン（小さく） -->
+                    <Button Content="&#xE720;"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="16"
+                            Background="Transparent"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            Padding="8"
+                            Margin="6,0,0,0"
+                            Cursor="Hand"
+                            ToolTip="音声入力"
+                            Click="OnVoiceInputClick"/>
+
+                    <!-- ヘルプボタン -->
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#6366F1"
+                            Margin="6,0,0,0"
+                            Click="OnHelpClick">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="ヘルプ"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Border>
 
@@ -143,19 +165,5 @@
                                       FontSize="18"
                                       FontFamily="Yu Gothic UI, Meiryo"
                                       Margin="10"/>
-
-        <!-- ========================================== -->
-        <!-- ステータスバー -->
-        <!-- ========================================== -->
-        <Border Grid.Row="3"
-                Background="{StaticResource SurfaceBrush}"
-                Padding="10,6"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,1,0,0">
-            <TextBlock x:Name="FileNameText"
-                       Text="新しい文書"
-                       Style="{StaticResource BaseTextStyle}"
-                       Foreground="{StaticResource TextSecondaryBrush}"/>
-        </Border>
     </Grid>
 </UserControl>

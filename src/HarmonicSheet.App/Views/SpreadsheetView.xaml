@@ -8,12 +8,12 @@
         <Grid.RowDefinitions>
             <!-- ツールバー -->
             <RowDefinition Height="Auto"/>
+            <!-- 計算ボタンバー -->
+            <RowDefinition Height="Auto"/>
             <!-- コマンド入力エリア -->
             <RowDefinition Height="Auto"/>
             <!-- スプレッドシート本体 -->
             <RowDefinition Height="*"/>
-            <!-- ステータスバー -->
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- ========================================== -->
@@ -78,9 +78,75 @@
         </Border>
 
         <!-- ========================================== -->
-        <!-- コマンド入力: 自然言語で操作 -->
+        <!-- 計算ボタンバー -->
         <!-- ========================================== -->
         <Border Grid.Row="1"
+                Background="{StaticResource SurfaceBrush}"
+                Padding="8,6"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+            <WrapPanel Orientation="Horizontal">
+                <Button Style="{StaticResource ActionButtonStyle}"
+                        Background="#10B981"
+                        Click="OnSumClick"
+                        ToolTip="選択範囲の合計を計算">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE8B2;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                        <TextBlock Text="合計(SUM)"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource ActionButtonStyle}"
+                        Background="#3B82F6"
+                        Click="OnAddClick"
+                        ToolTip="足し算の式を挿入">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="+" FontSize="24" Margin="0,0,6,0"/>
+                        <TextBlock Text="足し算"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource ActionButtonStyle}"
+                        Background="#3B82F6"
+                        Click="OnSubtractClick"
+                        ToolTip="引き算の式を挿入">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="-" FontSize="24" Margin="0,0,6,0"/>
+                        <TextBlock Text="引き算"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource ActionButtonStyle}"
+                        Background="#3B82F6"
+                        Click="OnMultiplyClick"
+                        ToolTip="掛け算の式を挿入">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="×" FontSize="20" Margin="0,0,6,0"/>
+                        <TextBlock Text="掛け算"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource ActionButtonStyle}"
+                        Background="#3B82F6"
+                        Click="OnDivideClick"
+                        ToolTip="割り算の式を挿入">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="÷" FontSize="20" Margin="0,0,6,0"/>
+                        <TextBlock Text="割り算"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource ActionButtonStyle}"
+                        Background="#8B5CF6"
+                        Click="OnAverageClick"
+                        ToolTip="選択範囲の平均を計算">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE8EF;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                        <TextBlock Text="平均"/>
+                    </StackPanel>
+                </Button>
+            </WrapPanel>
+        </Border>
+
+        <!-- ========================================== -->
+        <!-- コマンド入力: 自然言語で操作 -->
+        <!-- ========================================== -->
+        <Border Grid.Row="2"
                 Background="#EFF6FF"
                 Padding="10,8"
                 BorderBrush="{StaticResource BorderBrush}"
@@ -101,16 +167,40 @@
                          VerticalScrollBarVisibility="Auto"
                          KeyDown="OnCommandKeyDown"/>
 
-                <Button Grid.Column="1"
-                        Style="{StaticResource ActionButtonStyle}"
-                        Margin="8,0,0,0"
-                        MaxWidth="100"
-                        Click="OnExecuteCommand">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
-                        <TextBlock Text="実行"/>
-                    </StackPanel>
-                </Button>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,0,0">
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            MaxWidth="100"
+                            Click="OnExecuteCommand">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="実行"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- 音声入力ボタン（小さく） -->
+                    <Button Content="&#xE720;"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="16"
+                            Background="Transparent"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            Padding="8"
+                            Margin="6,0,0,0"
+                            Cursor="Hand"
+                            ToolTip="音声入力"
+                            Click="OnVoiceInputClick"/>
+
+                    <!-- ヘルプボタン -->
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#6366F1"
+                            Margin="6,0,0,0"
+                            Click="OnHelpClick">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="ヘルプ"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Border>
 
@@ -118,21 +208,8 @@
         <!-- スプレッドシート本体 -->
         <!-- ========================================== -->
         <syncfusion:SfSpreadsheet x:Name="Spreadsheet"
-                                  Grid.Row="2"
+                                  Grid.Row="3"
                                   FontSize="16"
                                   Margin="10"/>
-
-        <!-- ========================================== -->
-        <!-- ステータスバー -->
-        <!-- ========================================== -->
-        <Border Grid.Row="3"
-                Background="{StaticResource SurfaceBrush}"
-                Padding="10,6"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,1,0,0">
-            <TextBlock x:Name="StatusText"
-                       Text=""
-                       Style="{StaticResource BaseTextStyle}"/>
-        </Border>
     </Grid>
 </UserControl>
