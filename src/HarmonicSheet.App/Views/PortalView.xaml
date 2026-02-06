@@ -1,0 +1,264 @@
+<UserControl x:Class="HarmonicSheet.Views.PortalView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource BackgroundBrush}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- ヘッダー -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,40">
+                <TextBlock Text="📋 ホーム"
+                           FontSize="48"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextBrush}"
+                           Margin="0,0,0,10"/>
+                <TextBlock Text="最近使ったファイルとメール"
+                           FontSize="24"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+            </StackPanel>
+
+            <!-- コンテンツエリア -->
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Excelファイル -->
+                <StackPanel Grid.Row="0" Margin="0,0,0,40">
+                    <Border Background="#E8F5E9"
+                            BorderBrush="#4CAF50"
+                            BorderThickness="3"
+                            CornerRadius="12"
+                            Padding="20"
+                            Margin="0,0,0,20">
+                        <TextBlock Text="📊 最近使った表（Excel）"
+                                   FontSize="32"
+                                   FontWeight="Bold"
+                                   Foreground="#2E7D32"/>
+                    </Border>
+
+                    <ItemsControl x:Name="RecentSpreadsheets">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Click="OnOpenSpreadsheet"
+                                        Tag="{Binding Path}"
+                                        Margin="0,0,0,15"
+                                        HorizontalContentAlignment="Stretch"
+                                        Background="White"
+                                        BorderBrush="#E0E0E0"
+                                        BorderThickness="2"
+                                        Padding="25"
+                                        Cursor="Hand">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                CornerRadius="8"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#E8F5E9"/>
+                                                    <Setter Property="BorderBrush" Value="#4CAF50"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="📊"
+                                                   FontSize="40"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,20,0"/>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{Binding FileName}"
+                                                       FontSize="28"
+                                                       FontWeight="Bold"
+                                                       Foreground="{StaticResource TextBrush}"/>
+                                            <TextBlock Text="{Binding LastAccessed, StringFormat='最終使用: {0:yyyy/MM/dd HH:mm}'}"
+                                                       FontSize="18"
+                                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                                       Margin="0,5,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- 文書ファイル -->
+                <StackPanel Grid.Row="1" Margin="0,0,0,40">
+                    <Border Background="#E3F2FD"
+                            BorderBrush="#2196F3"
+                            BorderThickness="3"
+                            CornerRadius="12"
+                            Padding="20"
+                            Margin="0,0,0,20">
+                        <TextBlock Text="📄 最近使った文書"
+                                   FontSize="32"
+                                   FontWeight="Bold"
+                                   Foreground="#1565C0"/>
+                    </Border>
+
+                    <ItemsControl x:Name="RecentDocuments">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Click="OnOpenDocument"
+                                        Tag="{Binding Path}"
+                                        Margin="0,0,0,15"
+                                        HorizontalContentAlignment="Stretch"
+                                        Background="White"
+                                        BorderBrush="#E0E0E0"
+                                        BorderThickness="2"
+                                        Padding="25"
+                                        Cursor="Hand">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                CornerRadius="8"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#E3F2FD"/>
+                                                    <Setter Property="BorderBrush" Value="#2196F3"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="📄"
+                                                   FontSize="40"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,20,0"/>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{Binding FileName}"
+                                                       FontSize="28"
+                                                       FontWeight="Bold"
+                                                       Foreground="{StaticResource TextBrush}"/>
+                                            <TextBlock Text="{Binding LastAccessed, StringFormat='最終使用: {0:yyyy/MM/dd HH:mm}'}"
+                                                       FontSize="18"
+                                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                                       Margin="0,5,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- 受信メール -->
+                <StackPanel Grid.Row="2">
+                    <Border Background="#FFF3E0"
+                            BorderBrush="#FF9800"
+                            BorderThickness="3"
+                            CornerRadius="12"
+                            Padding="20"
+                            Margin="0,0,0,20">
+                        <TextBlock Text="📧 最近の受信メール"
+                                   FontSize="32"
+                                   FontWeight="Bold"
+                                   Foreground="#E65100"/>
+                    </Border>
+
+                    <ItemsControl x:Name="RecentMails">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Click="OnOpenMail"
+                                        Tag="{Binding Id}"
+                                        Margin="0,0,0,15"
+                                        HorizontalContentAlignment="Stretch"
+                                        Background="White"
+                                        BorderBrush="#E0E0E0"
+                                        BorderThickness="2"
+                                        Padding="25"
+                                        Cursor="Hand">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                CornerRadius="8"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#FFF3E0"/>
+                                                    <Setter Property="BorderBrush" Value="#FF9800"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="📧"
+                                                   FontSize="40"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,20,0"/>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{Binding Subject}"
+                                                       FontSize="28"
+                                                       FontWeight="Bold"
+                                                       Foreground="{StaticResource TextBrush}"/>
+                                            <TextBlock Text="{Binding From}"
+                                                       FontSize="20"
+                                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                                       Margin="0,5,0,0"/>
+                                            <TextBlock Text="{Binding ReceivedDate, StringFormat='受信: {0:yyyy/MM/dd HH:mm}'}"
+                                                       FontSize="18"
+                                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                                       Margin="0,5,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

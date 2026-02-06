@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,6 +30,9 @@ public partial class SpreadsheetView : UserControl
     private double _calcStoredValue = 0;
     private bool _calcNewNumber = true;
 
+    // 計算履歴
+    private ObservableCollection<string> _calcHistoryList = new ObservableCollection<string>();
+
     // 入力モードの状態
     private string _formulaBuffer = "";
 
@@ -41,6 +45,9 @@ public partial class SpreadsheetView : UserControl
         {
             // サービスは後で設定される
         }
+
+        // 計算履歴のバインディング
+        CalcHistory.ItemsSource = _calcHistoryList;
 
         // 新規ワークブックを作成（1シート）
         try
@@ -1013,9 +1020,63 @@ public partial class SpreadsheetView : UserControl
             _ => currentNum
         };
 
+        // 計算履歴に追加
+        var operatorSymbol = _calcOperator switch
+        {
+            "+" => "+",
+            "-" => "-",
+            "*" => "×",
+            "/" => "÷",
+            _ => ""
+        };
+
+        if (!string.IsNullOrEmpty(operatorSymbol))
+        {
+            var historyEntry = $"{_calcStoredValue} {operatorSymbol} {currentNum} = {result:G}";
+            _calcHistoryList.Insert(0, historyEntry); // 最新を先頭に追加
+
+            // 履歴が20件を超えたら古いものを削除
+            while (_calcHistoryList.Count > 20)
+            {
+                _calcHistoryList.RemoveAt(_calcHistoryList.Count - 1);
+            }
+        }
+
         _calcCurrentValue = result.ToString("G");
         _calcStoredValue = result;
         _calcNewNumber = true;
+    }
+
+    private void OnClearHistoryClick(object sender, RoutedEventArgs e)
+    {
+        _calcHistoryList.Clear();
+        MessageBox.Show("計算履歴をクリアしました。", "履歴クリア", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    private void OnHistoryItemDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        try
+        {
+            if (CalcHistory.SelectedItem is string historyEntry)
+            {
+                // "数値1 演算子 数値2 = 結果" の形式から結果を抽出
+                var parts = historyEntry.Split('=');
+                if (parts.Length == 2)
+                {
+                    var resultStr = parts[1].Trim();
+                    _calcCurrentValue = resultStr;
+                    _calcStoredValue = double.Parse(resultStr);
+                    _calcNewNumber = true;
+                    _calcOperator = "";
+                    UpdateCalcDisplay();
+                    MessageBox.Show($"履歴から値 {resultStr} を読み込みました。", "履歴から復元", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"履歴の読み込みに失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
 }

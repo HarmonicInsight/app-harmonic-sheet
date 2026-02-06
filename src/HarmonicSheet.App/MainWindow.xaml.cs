@@ -21,22 +21,28 @@ public partial class MainWindow : Window
     private void OnTabChanged(object sender, RoutedEventArgs e)
     {
         // 初期化が完了していない場合は何もしない
-        if (DocumentView == null || SpreadsheetView == null || MailView == null)
+        if (PortalView == null || DocumentView == null || SpreadsheetView == null || MailView == null)
             return;
 
         // 全てのビューを非表示に
+        PortalView.Visibility = Visibility.Collapsed;
         DocumentView.Visibility = Visibility.Collapsed;
         SpreadsheetView.Visibility = Visibility.Collapsed;
         MailView.Visibility = Visibility.Collapsed;
 
         // 選択されたタブのビューを表示
-        if (TabDocument.IsChecked == true)
+        if (TabPortal.IsChecked == true)
         {
-            DocumentView.Visibility = Visibility.Visible;
+            PortalView.Visibility = Visibility.Visible;
+            PortalView.LoadRecentFiles(); // ポータル表示時にファイルリストを更新
         }
         else if (TabSpreadsheet.IsChecked == true)
         {
             SpreadsheetView.Visibility = Visibility.Visible;
+        }
+        else if (TabDocument.IsChecked == true)
+        {
+            DocumentView.Visibility = Visibility.Visible;
         }
         else if (TabMail.IsChecked == true)
         {
