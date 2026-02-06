@@ -31,7 +31,6 @@ public partial class SpreadsheetView : UserControl
 
     // 入力モードの状態
     private string _formulaBuffer = "";
-    private bool _waitingForCellSelect = false;
 
     public SpreadsheetView()
     {
@@ -807,7 +806,6 @@ public partial class SpreadsheetView : UserControl
             {
                 // 入力モードをクリア
                 _formulaBuffer = "";
-                _waitingForCellSelect = false;
                 CellSelectIndicator.Visibility = Visibility.Collapsed;
                 UpdateFormulaDisplay();
             }
@@ -941,6 +939,31 @@ public partial class SpreadsheetView : UserControl
         catch (Exception ex)
         {
             MessageBox.Show($"セルへのコピーに失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnBackspaceClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (_formulaBuffer.Length > 0)
+            {
+                _formulaBuffer = _formulaBuffer.Substring(0, _formulaBuffer.Length - 1);
+                UpdateFormulaDisplay();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"削除に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnFormulaDisplayTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        // FormulaDisplayの直接編集を_formulaBufferに反映
+        if (sender is System.Windows.Controls.TextBox textBox)
+        {
+            _formulaBuffer = textBox.Text;
         }
     }
 
