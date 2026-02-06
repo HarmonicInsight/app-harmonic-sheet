@@ -1,6 +1,33 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace HarmonicSheet.Models;
+
+/// <summary>
+/// メール添付ファイルを表します
+/// </summary>
+public partial class MailAttachment : ObservableObject
+{
+    [ObservableProperty]
+    private string _fileName = string.Empty;
+
+    [ObservableProperty]
+    private string _filePath = string.Empty;
+
+    [ObservableProperty]
+    private long _fileSize;
+
+    public string FileSizeDisplay => FormatFileSize(FileSize);
+
+    private static string FormatFileSize(long bytes)
+    {
+        if (bytes < 1024)
+            return $"{bytes} B";
+        if (bytes < 1024 * 1024)
+            return $"{bytes / 1024.0:F1} KB";
+        return $"{bytes / (1024.0 * 1024.0):F1} MB";
+    }
+}
 
 /// <summary>
 /// メールメッセージを表します
@@ -30,6 +57,9 @@ public partial class MailMessage : ObservableObject
 
     [ObservableProperty]
     private bool _hasAttachment;
+
+    [ObservableProperty]
+    private ObservableCollection<MailAttachment> _attachments = new();
 }
 
 /// <summary>

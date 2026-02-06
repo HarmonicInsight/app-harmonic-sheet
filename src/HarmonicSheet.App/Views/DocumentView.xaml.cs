@@ -10,6 +10,10 @@ namespace HarmonicSheet.Views;
 public partial class DocumentView : UserControl
 {
     private string? _currentFilePath;
+    private static readonly string RecentFilesPath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "HarmonicSheet",
+        "recent_documents.txt");
 
     public DocumentView()
     {
@@ -19,6 +23,55 @@ public partial class DocumentView : UserControl
         if (Application.Current is App)
         {
             // DIからサービスを取得する場合はここで設定
+        }
+    }
+
+    private void OnRecentClick(object sender, RoutedEventArgs e)
+    {
+        var recentFiles = LoadRecentFiles();
+        if (recentFiles.Count == 0)
+        {
+            MessageBox.Show("最近使用したファイルはありません。", "前回使用", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        // 簡易的なファイル選択ダイアログ
+        var message = "最近使用したファイル:\n\n";
+        for (int i = 0; i < Math.Min(5, recentFiles.Count); i++)
+        {
+            message += $"{i + 1}. {Path.GetFileName(recentFiles[i])}\n";
+        }
+        message += "\n最新のファイルを開きますか？";
+
+        var result = MessageBox.Show(message, "前回使用", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (result == MessageBoxResult.Yes && File.Exists(recentFiles[0]))
+        {
+            try
+            {
+                var extension = Path.GetExtension(recentFiles[0]).ToLowerInvariant();
+                if (extension == ".docx")
+                {
+                    using var stream = File.OpenRead(recentFiles[0]);
+                    RichTextEditor.Load(stream, Syncfusion.Windows.Controls.RichTextBoxAdv.FormatType.Docx);
+                }
+                else
+                {
+                    var text = File.ReadAllText(recentFiles[0]);
+                    RichTextEditor.Document.Sections.Clear();
+                    var section = new Syncfusion.Windows.Controls.RichTextBoxAdv.SectionAdv();
+                    var paragraph = new Syncfusion.Windows.Controls.RichTextBoxAdv.ParagraphAdv();
+                    var span = new Syncfusion.Windows.Controls.RichTextBoxAdv.SpanAdv { Text = text };
+                    paragraph.Inlines.Add(span);
+                    section.Blocks.Add(paragraph);
+                    RichTextEditor.Document.Sections.Add(section);
+                }
+                _currentFilePath = recentFiles[0];
+                FileNameText.Text = Path.GetFileName(recentFiles[0]);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ファイルを開けませんでした。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 
@@ -35,7 +88,6 @@ public partial class DocumentView : UserControl
             RichTextEditor.Document.Sections.Clear();
             _currentFilePath = null;
             FileNameText.Text = "新しい文書";
-            StatusText.Text = "新しい文書を作りました";
         }
     }
 
@@ -73,7 +125,7 @@ public partial class DocumentView : UserControl
 
                 _currentFilePath = dialog.FileName;
                 FileNameText.Text = Path.GetFileName(dialog.FileName);
-                StatusText.Text = $"ファイルを開きました: {Path.GetFileName(dialog.FileName)}";
+                AddToRecentFiles(dialog.FileName);
             }
             catch (Exception ex)
             {
@@ -115,7 +167,7 @@ public partial class DocumentView : UserControl
 
                 _currentFilePath = dialog.FileName;
                 FileNameText.Text = Path.GetFileName(dialog.FileName);
-                StatusText.Text = $"保存しました: {Path.GetFileName(dialog.FileName)}";
+                AddToRecentFiles(dialog.FileName);
             }
             catch (Exception ex)
             {
@@ -137,7 +189,6 @@ public partial class DocumentView : UserControl
             if (printCommand.CanExecute(null, RichTextEditor))
             {
                 printCommand.Execute(null, RichTextEditor);
-                StatusText.Text = "印刷しました";
             }
         }
         catch (Exception ex)
@@ -159,7 +210,6 @@ public partial class DocumentView : UserControl
 
             if (string.IsNullOrWhiteSpace(text))
             {
-                StatusText.Text = "読み上げる文章がありません";
                 return;
             }
 
@@ -176,19 +226,16 @@ public partial class DocumentView : UserControl
 
             synthesizer.Rate = 0; // ゆっくり
             synthesizer.SpeakAsync(text);
-
-            StatusText.Text = "読み上げ中...";
         }
         catch (Exception ex)
         {
-            StatusText.Text = $"読み上げできませんでした: {ex.Message}";
+            MessageBox.Show($"読み上げできませんでした: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
     private void OnStopReadingClick(object sender, RoutedEventArgs e)
     {
         // 読み上げ停止（簡易実装）
-        StatusText.Text = "読み上げを停止しました";
     }
 
     private string GetDocumentText()
@@ -219,9 +266,10 @@ public partial class DocumentView : UserControl
 
     private void OnCommandKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        if (e.Key == Key.Enter && !Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
         {
             OnExecuteCommand(sender, e);
+            e.Handled = true;
         }
     }
 
@@ -230,23 +278,57 @@ public partial class DocumentView : UserControl
         var command = CommandInput.Text?.Trim();
         if (string.IsNullOrEmpty(command))
         {
-            StatusText.Text = "やりたいことを入力してください";
             return;
         }
-
-        StatusText.Text = "AIに依頼中...";
 
         try
         {
             // ここでClaudeサービスを呼び出す（将来実装）
             // 今は簡易メッセージを表示
             await Task.Delay(500);
-            StatusText.Text = "AIアシスタントは設定画面でAPIキーを入力すると使えます";
+            MessageBox.Show("AIアシスタントは設定画面でAPIキーを入力すると使えます", "情報", MessageBoxButton.OK, MessageBoxImage.Information);
             CommandInput.Text = string.Empty;
         }
         catch (Exception ex)
         {
-            StatusText.Text = $"エラー: {ex.Message}";
+            MessageBox.Show($"エラー: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    private List<string> LoadRecentFiles()
+    {
+        try
+        {
+            if (File.Exists(RecentFilesPath))
+            {
+                return File.ReadAllLines(RecentFilesPath)
+                    .Where(f => File.Exists(f))
+                    .ToList();
+            }
+        }
+        catch { }
+        return new List<string>();
+    }
+
+    private void AddToRecentFiles(string filePath)
+    {
+        try
+        {
+            var recentFiles = LoadRecentFiles();
+            recentFiles.Remove(filePath); // 既存を削除
+            recentFiles.Insert(0, filePath); // 先頭に追加
+
+            // 最大10件まで保持
+            var filesToSave = recentFiles.Take(10).ToList();
+
+            var directory = Path.GetDirectoryName(RecentFilesPath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            File.WriteAllLines(RecentFilesPath, filesToSave);
+        }
+        catch { }
     }
 }

@@ -1,20 +1,24 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using HarmonicSheet.Models;
 using HarmonicSheet.Services;
+using Microsoft.Win32;
 
 namespace HarmonicSheet.Views;
 
 public partial class MailView : UserControl
 {
     private readonly ObservableCollection<MailMessage> _messages = new();
+    private readonly ObservableCollection<MailAttachment> _composeAttachments = new();
     private MailMessage? _selectedMail;
 
     public MailView()
     {
         InitializeComponent();
         MailList.ItemsSource = _messages;
+        ComposeAttachmentsList.ItemsSource = _composeAttachments;
 
         // デモ用のサンプルメール
         LoadSampleMails();
@@ -31,14 +35,22 @@ public partial class MailView : UserControl
             Date = DateTime.Now.AddDays(-1)
         });
 
-        _messages.Add(new MailMessage
+        var mailWithAttachment = new MailMessage
         {
             Id = "2",
             From = "山田花子 <yamada@example.com>",
             Subject = "来週の予定について",
-            Body = "来週の土曜日、一緒にお食事いかがですか？\n\n近くのレストランを予約しておきます。\n\n山田花子",
-            Date = DateTime.Now.AddDays(-2)
+            Body = "来週の土曜日、一緒にお食事いかがですか？\n\n近くのレストランを予約しておきます。\n添付ファイルに地図を付けました。\n\n山田花子",
+            Date = DateTime.Now.AddDays(-2),
+            HasAttachment = true
+        };
+        mailWithAttachment.Attachments.Add(new MailAttachment
+        {
+            FileName = "レストラン地図.pdf",
+            FilePath = "",
+            FileSize = 245678
         });
+        _messages.Add(mailWithAttachment);
 
         _messages.Add(new MailMessage
         {
@@ -59,6 +71,18 @@ public partial class MailView : UserControl
             MailDate.Text = $"日時: {mail.Date:yyyy年M月d日 H:mm}";
             MailSubject.Text = mail.Subject;
             MailBody.Text = mail.Body;
+
+            // 添付ファイルの表示
+            if (mail.HasAttachment && mail.Attachments.Count > 0)
+            {
+                AttachmentsList.ItemsSource = mail.Attachments;
+                AttachmentsPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                AttachmentsPanel.Visibility = Visibility.Collapsed;
+            }
+
             StatusText.Text = "メールを表示しています";
         }
     }
@@ -69,6 +93,7 @@ public partial class MailView : UserControl
         ToInput.Text = string.Empty;
         SubjectInput.Text = string.Empty;
         BodyInput.Text = string.Empty;
+        _composeAttachments.Clear();
         StatusText.Text = "新しいメールを作成";
     }
 
@@ -99,6 +124,7 @@ public partial class MailView : UserControl
         ToInput.Text = _selectedMail.From;
         SubjectInput.Text = $"Re: {_selectedMail.Subject}";
         BodyInput.Text = $"\n\n---元のメール---\n{_selectedMail.Body}";
+        _composeAttachments.Clear();
         StatusText.Text = "返信を作成";
     }
 
@@ -180,8 +206,12 @@ public partial class MailView : UserControl
 
         await Task.Delay(1000); // デモ用の遅延
 
+        var attachmentInfo = _composeAttachments.Count > 0
+            ? $"\n添付ファイル: {_composeAttachments.Count}件"
+            : "";
+
         MessageBox.Show(
-            "メールを送信するには、設定画面で\nメールアカウントを設定してください。",
+            $"メールを送信するには、設定画面で\nメールアカウントを設定してください。{attachmentInfo}",
             "メール設定",
             MessageBoxButton.OK,
             MessageBoxImage.Information);
@@ -219,5 +249,103 @@ public partial class MailView : UserControl
         }
 
         AiCommandInput.Text = string.Empty;
+    }
+
+    private void OnAttachFileClick(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "添付するファイルを選んでください",
+            Filter = "すべてのファイル (*.*)|*.*",
+            Multiselect = true
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            foreach (var filePath in dialog.FileNames)
+            {
+                try
+                {
+                    var fileInfo = new FileInfo(filePath);
+                    var attachment = new MailAttachment
+                    {
+                        FileName = fileInfo.Name,
+                        FilePath = filePath,
+                        FileSize = fileInfo.Length
+                    };
+                    _composeAttachments.Add(attachment);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        $"ファイルを添付できませんでした。\n{ex.Message}",
+                        "エラー",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            }
+
+            if (dialog.FileNames.Length > 0)
+            {
+                StatusText.Text = $"{dialog.FileNames.Length}件のファイルを添付しました";
+            }
+        }
+    }
+
+    private void OnRemoveAttachmentClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is MailAttachment attachment)
+        {
+            _composeAttachments.Remove(attachment);
+            StatusText.Text = $"{attachment.FileName} を削除しました";
+        }
+    }
+
+    private void OnSaveAttachmentClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is MailAttachment attachment)
+        {
+            var dialog = new SaveFileDialog
+            {
+                FileName = attachment.FileName,
+                Title = "ファイルを保存する場所を選んでください"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    // デモモードでは実際のファイルは存在しないため、メッセージのみ表示
+                    if (string.IsNullOrEmpty(attachment.FilePath) || !File.Exists(attachment.FilePath))
+                    {
+                        MessageBox.Show(
+                            "これはデモメールのため、実際のファイルは存在しません。\n実際のメールでは、ここでファイルが保存されます。",
+                            "デモモード",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+                        StatusText.Text = "デモモードのため保存できません";
+                    }
+                    else
+                    {
+                        File.Copy(attachment.FilePath, dialog.FileName, true);
+                        StatusText.Text = $"{attachment.FileName} を保存しました";
+                        MessageBox.Show(
+                            $"ファイルを保存しました。\n{dialog.FileName}",
+                            "保存完了",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        $"ファイルを保存できませんでした。\n{ex.Message}",
+                        "エラー",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    StatusText.Text = $"保存に失敗しました: {ex.Message}";
+                }
+            }
+        }
     }
 }

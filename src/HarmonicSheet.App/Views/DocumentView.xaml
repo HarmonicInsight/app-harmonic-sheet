@@ -21,58 +21,81 @@
         <!-- ========================================== -->
         <Border Grid.Row="0"
                 Background="{StaticResource SurfaceBrush}"
-                Padding="15,10">
-            <StackPanel Orientation="Horizontal">
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Click="OnNewClick">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,10,0"/>
-                        <TextBlock Text="新規"/>
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Click="OnOpenClick">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,10,0"/>
-                        <TextBlock Text="開く"/>
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Click="OnSaveClick">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,10,0"/>
-                        <TextBlock Text="保存"/>
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Click="OnPrintClick">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE749;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,10,0"/>
-                        <TextBlock Text="印刷"/>
-                    </StackPanel>
-                </Button>
+                Padding="8,6">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <!-- 区切り -->
-                <Separator Width="20" Background="Transparent"/>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Click="OnRecentClick"
+                            ToolTip="最近使ったファイル">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="前回使用"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Click="OnNewClick">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="新規"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Click="OnOpenClick">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="開く"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Click="OnSaveClick">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="保存"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Click="OnPrintClick">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE749;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="印刷"/>
+                        </StackPanel>
+                    </Button>
 
-                <!-- 読み上げボタン -->
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#8B5CF6"
-                        Click="OnReadAloudClick">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE767;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,10,0"/>
-                        <TextBlock Text="読み上げ"/>
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#6366F1"
-                        Click="OnStopReadingClick">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,10,0"/>
-                        <TextBlock Text="停止"/>
-                    </StackPanel>
-                </Button>
-            </StackPanel>
+                    <!-- 区切り -->
+                    <Separator Width="12" Background="Transparent"/>
+
+                    <!-- 読み上げボタン -->
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#8B5CF6"
+                            Click="OnReadAloudClick">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE767;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="読み上げ"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#6366F1"
+                            Click="OnStopReadingClick">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
+                            <TextBlock Text="停止"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <TextBlock Grid.Column="1"
+                           Text="例: 「挨拶文を追加して」「敬語に直して」"
+                           FontSize="16"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           Margin="10,0"/>
+            </Grid>
         </Border>
 
         <!-- ========================================== -->
@@ -80,7 +103,7 @@
         <!-- ========================================== -->
         <Border Grid.Row="1"
                 Background="#F0FDF4"
-                Padding="20,15"
+                Padding="10,8"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0,0,0,1">
             <Grid>
@@ -89,22 +112,23 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="AIに手伝ってもらう（例：「挨拶文を追加して」「敬語に直して」）"
-                               Style="{StaticResource BaseTextStyle}"
-                               Foreground="{StaticResource TextSecondaryBrush}"
-                               Margin="0,0,0,8"/>
-                    <TextBox x:Name="CommandInput"
-                             Style="{StaticResource LargeTextBoxStyle}"
-                             KeyDown="OnCommandKeyDown"/>
-                </StackPanel>
+                <TextBox x:Name="CommandInput"
+                         Grid.Column="0"
+                         Style="{StaticResource LargeTextBoxStyle}"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         MinHeight="50"
+                         MaxHeight="100"
+                         VerticalScrollBarVisibility="Auto"
+                         KeyDown="OnCommandKeyDown"/>
 
                 <Button Grid.Column="1"
                         Style="{StaticResource ActionButtonStyle}"
-                        Margin="15,25,0,0"
+                        Margin="8,0,0,0"
+                        MaxWidth="100"
                         Click="OnExecuteCommand">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,10,0"/>
+                        <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,6,0"/>
                         <TextBlock Text="実行"/>
                     </StackPanel>
                 </Button>
@@ -125,25 +149,13 @@
         <!-- ========================================== -->
         <Border Grid.Row="3"
                 Background="{StaticResource SurfaceBrush}"
-                Padding="15,10"
+                Padding="10,6"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0,1,0,0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock x:Name="StatusText"
-                           Text="文書を編集できます"
-                           Style="{StaticResource BaseTextStyle}"/>
-
-                <TextBlock x:Name="FileNameText"
-                           Grid.Column="1"
-                           Text="新しい文書"
-                           Style="{StaticResource BaseTextStyle}"
-                           Foreground="{StaticResource TextSecondaryBrush}"/>
-            </Grid>
+            <TextBlock x:Name="FileNameText"
+                       Text="新しい文書"
+                       Style="{StaticResource BaseTextStyle}"
+                       Foreground="{StaticResource TextSecondaryBrush}"/>
         </Border>
     </Grid>
 </UserControl>
