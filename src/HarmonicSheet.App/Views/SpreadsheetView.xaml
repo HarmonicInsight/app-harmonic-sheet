@@ -154,14 +154,51 @@
                          KeyDown="OnCommandKeyDown"/>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,0,0">
-                    <Button Style="{StaticResource ActionButtonStyle}"
-                            MinWidth="150"
+                    <Button MinWidth="180"
                             MinHeight="70"
+                            BorderThickness="0"
+                            Cursor="Hand"
                             Click="OnExecuteCommand">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="28" Margin="0,0,8,0"/>
-                            <TextBlock Text="実行" FontSize="28" FontWeight="Bold"/>
-                        </StackPanel>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="12"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#667eea" Offset="0"/>
+                                            <GradientStop Color="#764ba2" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#667eea" BlurRadius="15" ShadowDepth="3" Opacity="0.4"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Effect">
+                                            <Setter.Value>
+                                                <DropShadowEffect Color="#667eea" BlurRadius="20" ShadowDepth="5" Opacity="0.6"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <TextBlock Text="🤖 AI実行" FontSize="28" FontWeight="Bold" Foreground="White"/>
                     </Button>
                 </StackPanel>
             </Grid>
@@ -218,8 +255,8 @@
                                     ToolTip="電卓として計算"/>
                             <Button x:Name="BtnInputMode"
                                     Grid.Column="1"
-                                    Content="入力"
-                                    FontSize="14"
+                                    Content="Excel入力"
+                                    FontSize="12"
                                     FontWeight="Bold"
                                     Padding="8"
                                     Margin="2"
@@ -233,6 +270,7 @@
 
                     <!-- 計算機モード表示エリア -->
                     <StackPanel x:Name="CalcModePanel" Visibility="Visible">
+                        <!-- 計算結果表示 -->
                         <Border Background="#FFFFFF"
                                 BorderBrush="#E7E2DA"
                                 BorderThickness="1"
@@ -263,6 +301,54 @@
                                         Foreground="White"
                                         BorderThickness="0"
                                         Click="OnCopyResultToCell"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 計算履歴 -->
+                        <Border Background="#FFFFFF"
+                                BorderBrush="#E7E2DA"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Padding="8"
+                                Margin="0,0,0,10">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                               Text="📝 計算履歴"
+                                               FontSize="12"
+                                               FontWeight="Bold"
+                                               Foreground="#57534E"/>
+                                    <Button Grid.Column="1"
+                                            Content="クリア"
+                                            FontSize="10"
+                                            Padding="4,2"
+                                            Background="#DC2626"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            Click="OnClearHistoryClick"
+                                            ToolTip="履歴をクリア"/>
+                                </Grid>
+                                <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+                                    <ListBox x:Name="CalcHistory"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             SelectionMode="Single"
+                                             MouseDoubleClick="OnHistoryItemDoubleClick">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}"
+                                                           FontSize="11"
+                                                           Foreground="#1C1917"
+                                                           TextWrapping="Wrap"
+                                                           Margin="2"/>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </ScrollViewer>
                             </StackPanel>
                         </Border>
                     </StackPanel>

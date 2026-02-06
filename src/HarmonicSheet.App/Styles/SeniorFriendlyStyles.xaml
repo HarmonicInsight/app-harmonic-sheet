@@ -107,13 +107,12 @@
         </Setter>
     </Style>
 
-    <!-- アクションボタン（送信、保存など） -->
+    <!-- アクションボタン（送信、保存など） - モダンデザイン -->
     <Style x:Key="ActionButtonStyle" TargetType="Button">
         <Setter Property="FontFamily" Value="Yu Gothic UI, Meiryo, Segoe UI"/>
         <Setter Property="FontSize" Value="{StaticResource FontSizeNormal}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="15,8"/>
         <Setter Property="Margin" Value="4"/>
@@ -123,23 +122,68 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}"
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="8"
+                            CornerRadius="10"
                             Padding="{TemplateBinding Padding}">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" BlurRadius="8" ShadowDepth="2" Opacity="0.15"/>
+                        </Border.Effect>
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#15803D"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="border"
+                                                         Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.BlurRadius)"
+                                                         To="12" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="border"
+                                                         Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.ShadowDepth)"
+                                                         To="4" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="border"
+                                                         Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.Opacity)"
+                                                         To="0.25" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="border"
+                                                         Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.BlurRadius)"
+                                                         To="8" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="border"
+                                                         Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.ShadowDepth)"
+                                                         To="2" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="border"
+                                                         Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.Opacity)"
+                                                         To="0.15" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="#166534"/>
+                            <Setter TargetName="border" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="#000000" BlurRadius="4" ShadowDepth="1" Opacity="0.1"/>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#10B981" Offset="0"/>
+                    <GradientStop Color="#059669" Offset="1"/>
+                </LinearGradientBrush>
             </Setter.Value>
         </Setter>
     </Style>

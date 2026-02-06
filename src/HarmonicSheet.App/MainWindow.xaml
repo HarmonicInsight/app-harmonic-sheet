@@ -38,9 +38,8 @@
                 </Border>
 
                 <!-- タブボタン（縦並び） -->
-                <!-- 1. 表（スプレッドシート） -->
-                <RadioButton x:Name="TabSpreadsheet"
-                             IsChecked="True"
+                <!-- 1. ホーム（ポータル） -->
+                <RadioButton x:Name="TabPortal"
                              Checked="OnTabChanged"
                              GroupName="MainTabs"
                              Background="Transparent"
@@ -52,37 +51,107 @@
                         <ControlTemplate TargetType="RadioButton">
                             <Border x:Name="Border"
                                     Background="{TemplateBinding Background}"
-                                    BorderBrush="{StaticResource BorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="8"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="2"
+                                    CornerRadius="12"
                                     Padding="{TemplateBinding Padding}">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="&#xE80A;"
-                                               FontFamily="Segoe MDL2 Assets"
-                                               FontSize="28"
+                                    <TextBlock x:Name="Icon"
+                                               Text="📋"
+                                               FontSize="32"
+                                               HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="Label"
+                                               Text="ホーム"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
                                                HorizontalAlignment="Center"
-                                               Foreground="{StaticResource TextBrush}"/>
-                                    <TextBlock Text="表"
-                                               FontSize="14"
-                                               HorizontalAlignment="Center"
-                                               Margin="0,5,0,0"
+                                               Margin="0,6,0,0"
                                                Foreground="{StaticResource TextBrush}"/>
                                 </StackPanel>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsChecked" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter TargetName="Border" Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#667eea" Offset="0"/>
+                                                <GradientStop Color="#764ba2" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter TargetName="Label" Property="Foreground" Value="White"/>
+                                    <Setter TargetName="Border" Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect Color="#667eea" BlurRadius="12" ShadowDepth="0" Opacity="0.5"/>
+                                        </Setter.Value>
+                                    </Setter>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#EEEBE5"/>
+                                    <Setter TargetName="Border" Property="Background" Value="#F5F5F5"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </RadioButton.Template>
                 </RadioButton>
 
-                <!-- 2. 文書 -->
+                <!-- 2. 表（Excel） -->
+                <RadioButton x:Name="TabSpreadsheet"
+                             IsChecked="True"
+                             Checked="OnTabChanged"
+                             GroupName="MainTabs"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="10"
+                             Margin="5"
+                             Cursor="Hand">
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="2"
+                                    CornerRadius="12"
+                                    Padding="{TemplateBinding Padding}">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock x:Name="Icon"
+                                               Text="📊"
+                                               FontSize="32"
+                                               HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="Label"
+                                               Text="Excel"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,6,0,0"
+                                               Foreground="{StaticResource TextBrush}"/>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Border" Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#11998e" Offset="0"/>
+                                                <GradientStop Color="#38ef7d" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter TargetName="Label" Property="Foreground" Value="White"/>
+                                    <Setter TargetName="Border" Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect Color="#11998e" BlurRadius="12" ShadowDepth="0" Opacity="0.5"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="#F5F5F5"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+
+                <!-- 3. 文書 -->
                 <RadioButton x:Name="TabDocument"
                              Checked="OnTabChanged"
                              GroupName="MainTabs"
@@ -95,37 +164,50 @@
                         <ControlTemplate TargetType="RadioButton">
                             <Border x:Name="Border"
                                     Background="{TemplateBinding Background}"
-                                    BorderBrush="{StaticResource BorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="8"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="2"
+                                    CornerRadius="12"
                                     Padding="{TemplateBinding Padding}">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="&#xE8A5;"
-                                               FontFamily="Segoe MDL2 Assets"
-                                               FontSize="28"
+                                    <TextBlock x:Name="Icon"
+                                               Text="📄"
+                                               FontSize="32"
+                                               HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="Label"
+                                               Text="文書"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
                                                HorizontalAlignment="Center"
-                                               Foreground="{StaticResource TextBrush}"/>
-                                    <TextBlock Text="文書"
-                                               FontSize="14"
-                                               HorizontalAlignment="Center"
-                                               Margin="0,5,0,0"
+                                               Margin="0,6,0,0"
                                                Foreground="{StaticResource TextBrush}"/>
                                 </StackPanel>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsChecked" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter TargetName="Border" Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#4facfe" Offset="0"/>
+                                                <GradientStop Color="#00f2fe" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter TargetName="Label" Property="Foreground" Value="White"/>
+                                    <Setter TargetName="Border" Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect Color="#4facfe" BlurRadius="12" ShadowDepth="0" Opacity="0.5"/>
+                                        </Setter.Value>
+                                    </Setter>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#EEEBE5"/>
+                                    <Setter TargetName="Border" Property="Background" Value="#F5F5F5"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </RadioButton.Template>
                 </RadioButton>
 
-                <!-- 3. メール -->
+                <!-- 4. メール -->
                 <RadioButton x:Name="TabMail"
                              Checked="OnTabChanged"
                              GroupName="MainTabs"
@@ -138,30 +220,43 @@
                         <ControlTemplate TargetType="RadioButton">
                             <Border x:Name="Border"
                                     Background="{TemplateBinding Background}"
-                                    BorderBrush="{StaticResource BorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="8"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="2"
+                                    CornerRadius="12"
                                     Padding="{TemplateBinding Padding}">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="&#xE715;"
-                                               FontFamily="Segoe MDL2 Assets"
-                                               FontSize="28"
+                                    <TextBlock x:Name="Icon"
+                                               Text="📧"
+                                               FontSize="32"
+                                               HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="Label"
+                                               Text="メール"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
                                                HorizontalAlignment="Center"
-                                               Foreground="{StaticResource TextBrush}"/>
-                                    <TextBlock Text="メール"
-                                               FontSize="14"
-                                               HorizontalAlignment="Center"
-                                               Margin="0,5,0,0"
+                                               Margin="0,6,0,0"
                                                Foreground="{StaticResource TextBrush}"/>
                                 </StackPanel>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsChecked" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter TargetName="Border" Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#fa709a" Offset="0"/>
+                                                <GradientStop Color="#fee140" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter TargetName="Label" Property="Foreground" Value="White"/>
+                                    <Setter TargetName="Border" Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect Color="#fa709a" BlurRadius="12" ShadowDepth="0" Opacity="0.5"/>
+                                        </Setter.Value>
+                                    </Setter>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#EEEBE5"/>
+                                    <Setter TargetName="Border" Property="Background" Value="#F5F5F5"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -188,12 +283,15 @@
         <!-- メインコンテンツ -->
         <!-- ========================================== -->
         <Grid Grid.Column="1">
-            <!-- 文書ビュー -->
-            <views:DocumentView x:Name="DocumentView"
-                                Visibility="Visible"/>
+            <!-- ポータルビュー -->
+            <views:PortalView x:Name="PortalView"
+                              Visibility="Collapsed"/>
             <!-- 表計算ビュー -->
             <views:SpreadsheetView x:Name="SpreadsheetView"
-                                   Visibility="Collapsed"/>
+                                   Visibility="Visible"/>
+            <!-- 文書ビュー -->
+            <views:DocumentView x:Name="DocumentView"
+                                Visibility="Collapsed"/>
             <!-- メールビュー -->
             <views:MailView x:Name="MailView"
                             Visibility="Collapsed"/>
