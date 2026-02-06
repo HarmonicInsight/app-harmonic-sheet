@@ -215,6 +215,34 @@
                                   Content="高コントラストモード（文字をより見やすく）"
                                   FontSize="14"
                                   Margin="0,15,0,0"/>
+
+                        <!-- カラーテーマ選択 -->
+                        <TextBlock Text="カラーテーマ"
+                                   FontSize="14"
+                                   Margin="0,20,0,8"/>
+                        <ComboBox x:Name="ThemeComboBox"
+                                  FontSize="14"
+                                  Padding="10,8"
+                                  SelectionChanged="OnThemeChanged">
+                            <ComboBoxItem Content="オプション1: Google Sheets風（シンプル・グレー統一）" Tag="GoogleSheets"/>
+                            <ComboBoxItem Content="オプション2: Modern Minimal（おすすめ・薄い青）" Tag="ModernMinimal" IsSelected="True"/>
+                            <ComboBoxItem Content="オプション3: Senior Friendly（ベージュ・優しい）" Tag="SeniorFriendly"/>
+                        </ComboBox>
+
+                        <!-- テーマプレビュー -->
+                        <Border Background="White"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="5"
+                                Padding="12"
+                                Margin="0,12,0,0">
+                            <StackPanel>
+                                <TextBlock Text="プレビュー" FontSize="12" FontWeight="Bold" Margin="0,0,0,8"/>
+                                <WrapPanel x:Name="ThemePreview" Margin="0,4">
+                                    <!-- Preview buttons will be added dynamically -->
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

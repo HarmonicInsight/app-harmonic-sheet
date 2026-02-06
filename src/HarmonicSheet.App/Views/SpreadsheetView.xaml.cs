@@ -1382,30 +1382,10 @@ A: 「新規」ボタンを押すと、家計簿テンプレート
         MessageBox.Show("計算履歴をクリアしました。", "履歴クリア", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
-    private void OnHistoryItemDoubleClick(object sender, MouseButtonEventArgs e)
-    {
-        try
-        {
-            if (CalcHistory.SelectedItem is string historyEntry)
-            {
-                // "数値1 演算子 数値2 = 結果" の形式から結果を抽出
-                var parts = historyEntry.Split('=');
-                if (parts.Length == 2)
-                {
-                    var resultStr = parts[1].Trim();
-                    _calcCurrentValue = resultStr;
-                    _calcStoredValue = double.Parse(resultStr);
-                    _calcNewNumber = true;
-                    _calcOperator = "";
-                    UpdateCalcDisplay();
-                    MessageBox.Show($"履歴から値 {resultStr} を読み込みました。", "履歴から復元", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"履歴の読み込みに失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
+    // 履歴ダブルクリック機能は削除（履歴がダイアログに移動したため）
+    // private void OnHistoryItemDoubleClick(object sender, MouseButtonEventArgs e)
+    // {
+    //     // この機能は履歴がListBoxからダイアログに移動したため使用不可
+    // }
 
 }
