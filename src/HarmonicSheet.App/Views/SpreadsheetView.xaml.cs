@@ -1,8 +1,10 @@
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using HarmonicSheet.Services;
 using HarmonicSheet.ViewModels;
 using Microsoft.Win32;
@@ -54,6 +56,9 @@ public partial class SpreadsheetView : UserControl
             // シニア向けの大きなフォント設定
             ConfigureForSeniors();
 
+            // テーマカラーを適用
+            LoadAndApplyTheme();
+
             // モードUIを初期化
             UpdateModeUI();
         }
@@ -91,6 +96,77 @@ public partial class SpreadsheetView : UserControl
         {
             // 設定に失敗しても続行
         }
+    }
+
+    private void LoadAndApplyTheme()
+    {
+        try
+        {
+            // 設定ファイルを読み込んでテーマを取得
+            var settingsFilePath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "HarmonicSheet",
+                "settings.json");
+
+            string selectedTheme = "ModernMinimal"; // デフォルト
+
+            if (File.Exists(settingsFilePath))
+            {
+                var json = File.ReadAllText(settingsFilePath);
+                var settings = JsonSerializer.Deserialize<AppSettings>(json);
+                if (settings != null && !string.IsNullOrEmpty(settings.ColorTheme))
+                {
+                    selectedTheme = settings.ColorTheme;
+                }
+            }
+
+            // テーマを設定
+            ColorTheme.CurrentTheme = selectedTheme;
+
+            // テーマカラーを取得
+            var colors = ColorTheme.GetColors();
+
+            // ツールバーボタン（一般）
+            // 既存のスタイルを使用するのでここでは設定不要
+
+            // 計算ボタン行の背景とボーダー
+            CalcButtonRow.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors.CalcRowBackground));
+            CalcButtonRow.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors.CalcRowBorder));
+
+            // 計算ラベル
+            CalcLabel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors.CalcLabelBackground));
+            CalcLabelText.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors.CalcLabelForeground));
+
+            // 計算ボタン（全て同じ色に統一）
+            BtnSum.Background = colors.CalcButtonBrush;
+            BtnSum.Foreground = colors.CalcForegroundBrush;
+
+            BtnAverage.Background = colors.CalcButtonBrush;
+            BtnAverage.Foreground = colors.CalcForegroundBrush;
+
+            BtnTax10.Background = colors.CalcButtonBrush;
+            BtnTax10.Foreground = colors.CalcForegroundBrush;
+
+            BtnTax8.Background = colors.CalcButtonBrush;
+            BtnTax8.Foreground = colors.CalcForegroundBrush;
+
+            BtnDiscount.Background = colors.CalcButtonBrush;
+            BtnDiscount.Foreground = colors.CalcForegroundBrush;
+
+            BtnCumulative.Background = colors.CalcButtonBrush;
+            BtnCumulative.Foreground = colors.CalcForegroundBrush;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"テーマの適用に失敗: {ex.Message}");
+            // エラーが発生してもデフォルトテーマで続行
+        }
+    }
+
+    // AppSettings クラス（設定ファイルの読み込み用）
+    private class AppSettings
+    {
+        public string? ColorTheme { get; set; }
     }
 
     private void OnUndoClick(object sender, RoutedEventArgs e)
