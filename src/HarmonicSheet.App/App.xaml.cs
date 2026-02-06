@@ -38,21 +38,37 @@ public partial class App : Application
             Services = _serviceProvider;
 
             // 初回起動時はチュートリアルを表示（コマンドライン引数で無効化可能）
-            if (!e.Args.Contains("--skip-tutorial"))
+            // チュートリアルを完全に無効化: --skip-tutorial
+            var skipTutorial = e.Args.Contains("--skip-tutorial") || e.Args.Contains("--no-tutorial");
+
+            if (!skipTutorial)
             {
                 try
                 {
                     var tutorialService = _serviceProvider.GetRequiredService<ITutorialService>();
                     if (!tutorialService.IsCompleted)
                     {
-                        var tutorialWindow = new TutorialWindow(tutorialService);
-                        tutorialWindow.ShowDialog();
+                        try
+                        {
+                            var tutorialWindow = new TutorialWindow(tutorialService);
+                            tutorialWindow.ShowDialog();
+                        }
+                        catch (Exception tutEx)
+                        {
+                            // チュートリアルウィンドウ表示エラー
+                            System.Diagnostics.Debug.WriteLine($"Tutorial window error: {tutEx.Message}");
+                            MessageBox.Show(
+                                $"チュートリアル表示でエラーが発生しましたが、アプリは起動します。\n\n{tutEx.Message}",
+                                "チュートリアルエラー",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception tutServiceEx)
                 {
-                    // チュートリアル表示エラーは無視して起動を続行
-                    System.Diagnostics.Debug.WriteLine($"Tutorial error: {ex.Message}");
+                    // チュートリアルサービス取得エラー
+                    System.Diagnostics.Debug.WriteLine($"Tutorial service error: {tutServiceEx.Message}");
                 }
             }
 
