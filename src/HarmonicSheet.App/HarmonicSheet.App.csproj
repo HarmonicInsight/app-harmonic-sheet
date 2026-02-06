@@ -6,7 +6,6 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>Resources\app.ico</ApplicationIcon>
     <AssemblyName>HarmonicSheet</AssemblyName>
     <RootNamespace>HarmonicSheet</RootNamespace>
     <Version>1.0.0</Version>
