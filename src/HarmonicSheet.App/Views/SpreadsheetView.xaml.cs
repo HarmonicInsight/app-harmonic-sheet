@@ -85,6 +85,9 @@ public partial class SpreadsheetView : UserControl
                 {
                     worksheet.SetColumnWidth(i, 120);
                 }
+
+                // 自動計算を有効化
+                worksheet.EnableSheetCalculations();
             }
         }
         catch
@@ -216,6 +219,9 @@ public partial class SpreadsheetView : UserControl
             worksheet[$"B{row}"].Formula = $"=SUM(B4:B{row - 1})";
             worksheet[$"C{row}"].Formula = $"=SUM(C4:C{row - 1})";
             worksheet[$"D{row}"].Formula = $"=SUM(D4:D{row - 1})";
+
+            // 再計算を強制
+            worksheet.Calculate();
 
             // 列幅調整（既にConfigureForSeniorsで設定済み）
 
@@ -577,6 +583,9 @@ public partial class SpreadsheetView : UserControl
             var formula = $"=SUM({rangeAddress})";
 
             worksheet[$"{GetColumnName(targetCol)}{targetRow}"].Formula = formula;
+
+            // 再計算を強制
+            worksheet.Calculate();
             Spreadsheet.ActiveGrid.InvalidateCell(targetRow, targetCol);
 
             MessageBox.Show($"合計を {GetColumnName(targetCol)}{targetRow} に計算しました。", "合計", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -629,6 +638,9 @@ public partial class SpreadsheetView : UserControl
             var formula = $"=AVERAGE({rangeAddress})";
 
             worksheet[$"{GetColumnName(targetCol)}{targetRow}"].Formula = formula;
+
+            // 再計算を強制
+            worksheet.Calculate();
             Spreadsheet.ActiveGrid.InvalidateCell(targetRow, targetCol);
 
             MessageBox.Show($"平均を {GetColumnName(targetCol)}{targetRow} に計算しました。", "平均", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -769,17 +781,21 @@ public partial class SpreadsheetView : UserControl
                 var cellAddress = $"{GetColumnName(col)}{row}";
                 var cell = worksheet[cellAddress];
 
-                // 現在の値を取得
+                // 現在の値を取得して確認
                 if (cell.Value != null && double.TryParse(cell.Value.ToString(), out var value))
                 {
-                    var result = Math.Round(value * multiplier, 0); // 四捨五入
                     var targetRow = row + 1;
                     var targetAddress = $"{GetColumnName(col)}{targetRow}";
 
-                    worksheet[targetAddress].Value = result.ToString();
+                    // 計算式を挿入（直接計算せず、式を入れる）
+                    var formula = $"={cellAddress}*{multiplier}";
+                    worksheet[targetAddress].Formula = formula;
+
+                    // 再計算を強制
+                    worksheet.Calculate();
                     Spreadsheet.ActiveGrid.InvalidateCell(targetRow, col);
 
-                    MessageBox.Show($"{operation}を適用しました。\n{value}円 → {result}円\n結果は {targetAddress} に入力されました。",
+                    MessageBox.Show($"{operation}の計算式を {targetAddress} に入力しました。\n式: {formula}",
                         "計算完了", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
@@ -797,6 +813,9 @@ public partial class SpreadsheetView : UserControl
 
                 var formula = $"=SUM({sourceAddress})*{multiplier}";
                 worksheet[targetAddress].Formula = formula;
+
+                // 再計算を強制
+                worksheet.Calculate();
                 Spreadsheet.ActiveGrid.InvalidateCell(targetRow, targetCol);
 
                 MessageBox.Show($"{operation}を適用して {targetAddress} に計算しました。",
@@ -894,24 +913,38 @@ public partial class SpreadsheetView : UserControl
 
     private void OnHelpClick(object sender, RoutedEventArgs e)
     {
-        var helpText = @"【表モードの使い方】
+        var helpText = @"🤖 AIアシスタント - 困ったときはこちら
 
-■ 基本操作
-　数字を入れて計算ができます。
-　家計簿や名簿を作るときに使います。
+━━━━━━━━━━━━━━━━━━━━━━
 
-■ 計算ボタン
-　・合計: セルを選択して押すと合計を計算
-　・平均: 選択範囲の平均を計算
+💬 よくある質問
 
-■ テンキー
-　右側のテンキーで数字や計算式を簡単に入力できます。
-　・数字ボタン: 選択中のセルに数字を入力
-　・+、-、×、÷: 計算式を作成
-　・=: 計算式の最初に付ける
-　・C: セルの内容をクリア
+Q: 合計を計算したい
+A: セルを選んで「合計」ボタンを押してください。
+   選んだセルの下に合計が表示されます。
 
-■ コマンド入力
+Q: 消費税を計算したい
+A: 金額のセルを選んで「消費税10%」か
+   「消費税8%」ボタンを押してください。
+   計算式が自動で入ります。
+
+Q: 計算式が0になってしまう
+A: 計算式を入れた後、少し待ってください。
+   自動で再計算されます。
+
+Q: 家計簿を作りたい
+A: 「新規」ボタンを押すと、家計簿テンプレート
+   が使えます。
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+📞 電話サポート
+　0120-XXX-XXX (平日 9:00〜18:00)
+
+💡 使い方のコツ
+　・数字を入れたいセルをクリック
+　・ボタンを押す前に必ずセルを選択
+　・テンキーボタンで数字を簡単入力
 　話しかけるだけで操作できます。
 　例：「A2に1万円入れて」
 　　　「A1からA3を足してA4に」

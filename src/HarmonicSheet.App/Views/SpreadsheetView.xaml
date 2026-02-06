@@ -22,89 +22,91 @@
         <Border Grid.Row="0"
                 Background="{StaticResource SurfaceBrush}"
                 Padding="8,6">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <Grid MinWidth="1200">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <Button Style="{StaticResource ActionButtonStyle}"
-                            Background="#6B7280"
-                            MinWidth="150"
-                            MinHeight="60"
-                            Padding="20,12"
-                            Click="OnUndoClick"
-                            ToolTip="元に戻す（やり直し）">
-                        <TextBlock Text="↩ 元に戻す" FontSize="22" FontWeight="Bold"/>
-                    </Button>
-                    <Button Style="{StaticResource ActionButtonStyle}"
-                            MinWidth="150"
-                            MinHeight="60"
-                            Padding="20,12"
-                            Click="OnRecentClick"
-                            ToolTip="最近使ったファイル">
-                        <TextBlock Text="前回使用" FontSize="24" FontWeight="Bold"/>
-                    </Button>
-                    <Button Style="{StaticResource ActionButtonStyle}"
-                            MinWidth="150"
-                            MinHeight="60"
-                            Padding="20,12"
-                            Click="OnNewClick">
-                        <TextBlock Text="新規" FontSize="24" FontWeight="Bold"/>
-                    </Button>
-                    <Button Style="{StaticResource ActionButtonStyle}"
-                            MinWidth="150"
-                            MinHeight="60"
-                            Padding="20,12"
-                            Click="OnOpenClick">
-                        <TextBlock Text="開く" FontSize="24" FontWeight="Bold"/>
-                    </Button>
-                    <Button Style="{StaticResource ActionButtonStyle}"
-                            MinWidth="150"
-                            MinHeight="60"
-                            Padding="20,12"
-                            Click="OnSaveClick">
-                        <TextBlock Text="保存" FontSize="24" FontWeight="Bold"/>
-                    </Button>
-                    <Button Style="{StaticResource ActionButtonStyle}"
-                            MinWidth="150"
-                            MinHeight="60"
-                            Padding="20,12"
-                            Click="OnPrintClick">
-                        <TextBlock Text="印刷" FontSize="24" FontWeight="Bold"/>
-                    </Button>
-                    <Button Style="{StaticResource ActionButtonStyle}"
-                            Background="#6366F1"
-                            MinWidth="150"
-                            MinHeight="60"
-                            Padding="20,12"
-                            Click="OnHelpClick">
-                        <TextBlock Text="ヘルプ" FontSize="24" FontWeight="Bold"/>
-                    </Button>
-                    <Button x:Name="BtnToggleKeypad"
-                            Style="{StaticResource ActionButtonStyle}"
-                            Background="#8B5CF6"
-                            MinWidth="150"
-                            MinHeight="60"
-                            Padding="20,12"
-                            Click="OnToggleKeypadClick"
-                            ToolTip="テンキーを表示/非表示">
-                        <TextBlock Text="テンキー" FontSize="24" FontWeight="Bold"/>
-                    </Button>
-                </StackPanel>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <Button Style="{StaticResource ActionButtonStyle}"
+                                Background="#6B7280"
+                                MinWidth="150"
+                                MinHeight="60"
+                                Padding="20,12"
+                                Click="OnUndoClick"
+                                ToolTip="元に戻す（やり直し）">
+                            <TextBlock Text="↩ 元に戻す" FontSize="22" FontWeight="Bold"/>
+                        </Button>
+                        <Button Style="{StaticResource ActionButtonStyle}"
+                                MinWidth="150"
+                                MinHeight="60"
+                                Padding="20,12"
+                                Click="OnRecentClick"
+                                ToolTip="最近使ったファイル">
+                            <TextBlock Text="前回使用" FontSize="24" FontWeight="Bold"/>
+                        </Button>
+                        <Button Style="{StaticResource ActionButtonStyle}"
+                                MinWidth="150"
+                                MinHeight="60"
+                                Padding="20,12"
+                                Click="OnNewClick">
+                            <TextBlock Text="新規" FontSize="24" FontWeight="Bold"/>
+                        </Button>
+                        <Button Style="{StaticResource ActionButtonStyle}"
+                                MinWidth="150"
+                                MinHeight="60"
+                                Padding="20,12"
+                                Click="OnOpenClick">
+                            <TextBlock Text="開く" FontSize="24" FontWeight="Bold"/>
+                        </Button>
+                        <Button Style="{StaticResource ActionButtonStyle}"
+                                MinWidth="150"
+                                MinHeight="60"
+                                Padding="20,12"
+                                Click="OnSaveClick">
+                            <TextBlock Text="保存" FontSize="24" FontWeight="Bold"/>
+                        </Button>
+                        <Button Style="{StaticResource ActionButtonStyle}"
+                                MinWidth="150"
+                                MinHeight="60"
+                                Padding="20,12"
+                                Click="OnPrintClick">
+                            <TextBlock Text="印刷" FontSize="24" FontWeight="Bold"/>
+                        </Button>
+                        <Button Style="{StaticResource ActionButtonStyle}"
+                                Background="#6366F1"
+                                MinWidth="150"
+                                MinHeight="60"
+                                Padding="20,12"
+                                Click="OnHelpClick">
+                            <TextBlock Text="ヘルプ" FontSize="24" FontWeight="Bold"/>
+                        </Button>
+                        <Button x:Name="BtnToggleKeypad"
+                                Style="{StaticResource ActionButtonStyle}"
+                                Background="#8B5CF6"
+                                MinWidth="150"
+                                MinHeight="60"
+                                Padding="20,12"
+                                Click="OnToggleKeypadClick"
+                                ToolTip="テンキーを表示/非表示">
+                            <TextBlock Text="テンキー" FontSize="24" FontWeight="Bold"/>
+                        </Button>
+                    </StackPanel>
 
-                <StackPanel Grid.Column="1"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Right"
-                           Margin="10,0">
-                    <TextBlock Text="例: 「A2に1万円入れて」"
-                               FontSize="20"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextBrush}"
-                               HorizontalAlignment="Right"/>
-                </StackPanel>
-            </Grid>
+                    <StackPanel Grid.Column="1"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Right"
+                               Margin="10,0">
+                        <TextBlock Text="例: 「A2に1万円入れて」"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextBrush}"
+                                   HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
         </Border>
 
         <!-- ========================================== -->
@@ -115,62 +117,64 @@
                 Padding="8,6"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0,0,0,1">
-            <WrapPanel Orientation="Horizontal">
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#10B981"
-                        MinWidth="200"
-                        MinHeight="60"
-                        Padding="20,12"
-                        Click="OnSumClick"
-                        ToolTip="選択範囲の合計を計算">
-                    <TextBlock Text="合計" FontSize="24" FontWeight="Bold"/>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#8B5CF6"
-                        MinWidth="200"
-                        MinHeight="60"
-                        Padding="20,12"
-                        Click="OnAverageClick"
-                        ToolTip="選択範囲の平均を計算">
-                    <TextBlock Text="平均" FontSize="24" FontWeight="Bold"/>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#F59E0B"
-                        MinWidth="200"
-                        MinHeight="60"
-                        Padding="20,12"
-                        Click="OnTax10Click"
-                        ToolTip="選択セルに消費税10%を追加">
-                    <TextBlock Text="消費税10%" FontSize="22" FontWeight="Bold"/>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#FB923C"
-                        MinWidth="200"
-                        MinHeight="60"
-                        Padding="20,12"
-                        Click="OnTax8Click"
-                        ToolTip="選択セルに消費税8%を追加">
-                    <TextBlock Text="消費税8%" FontSize="22" FontWeight="Bold"/>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#EF4444"
-                        MinWidth="200"
-                        MinHeight="60"
-                        Padding="20,12"
-                        Click="OnDiscountClick"
-                        ToolTip="割引計算">
-                    <TextBlock Text="割引計算" FontSize="24" FontWeight="Bold"/>
-                </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
-                        Background="#14B8A6"
-                        MinWidth="200"
-                        MinHeight="60"
-                        Padding="20,12"
-                        Click="OnCumulativeClick"
-                        ToolTip="これまでの累計を計算">
-                    <TextBlock Text="累計" FontSize="24" FontWeight="Bold"/>
-                </Button>
-            </WrapPanel>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <WrapPanel Orientation="Horizontal" MinWidth="1200">
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#10B981"
+                            MinWidth="200"
+                            MinHeight="60"
+                            Padding="20,12"
+                            Click="OnSumClick"
+                            ToolTip="選択範囲の合計を計算">
+                        <TextBlock Text="合計" FontSize="24" FontWeight="Bold"/>
+                    </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#8B5CF6"
+                            MinWidth="200"
+                            MinHeight="60"
+                            Padding="20,12"
+                            Click="OnAverageClick"
+                            ToolTip="選択範囲の平均を計算">
+                        <TextBlock Text="平均" FontSize="24" FontWeight="Bold"/>
+                    </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#F59E0B"
+                            MinWidth="200"
+                            MinHeight="60"
+                            Padding="20,12"
+                            Click="OnTax10Click"
+                            ToolTip="選択セルに消費税10%を追加">
+                        <TextBlock Text="消費税10%" FontSize="22" FontWeight="Bold"/>
+                    </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#FB923C"
+                            MinWidth="200"
+                            MinHeight="60"
+                            Padding="20,12"
+                            Click="OnTax8Click"
+                            ToolTip="選択セルに消費税8%を追加">
+                        <TextBlock Text="消費税8%" FontSize="22" FontWeight="Bold"/>
+                    </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#EF4444"
+                            MinWidth="200"
+                            MinHeight="60"
+                            Padding="20,12"
+                            Click="OnDiscountClick"
+                            ToolTip="割引計算">
+                        <TextBlock Text="割引計算" FontSize="24" FontWeight="Bold"/>
+                    </Button>
+                    <Button Style="{StaticResource ActionButtonStyle}"
+                            Background="#14B8A6"
+                            MinWidth="200"
+                            MinHeight="60"
+                            Padding="20,12"
+                            Click="OnCumulativeClick"
+                            ToolTip="これまでの累計を計算">
+                        <TextBlock Text="累計" FontSize="24" FontWeight="Bold"/>
+                    </Button>
+                </WrapPanel>
+            </ScrollViewer>
         </Border>
 
         <!-- ========================================== -->
@@ -261,7 +265,7 @@
             <!-- スプレッドシート本体 -->
             <syncfusion:SfSpreadsheet x:Name="Spreadsheet"
                                       Grid.Column="0"
-                                      FontSize="24"
+                                      FontSize="16"
                                       Margin="10"/>
 
             <!-- テンキーと計算機能 -->
