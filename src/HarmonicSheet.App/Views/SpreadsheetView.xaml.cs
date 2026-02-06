@@ -178,12 +178,12 @@ public partial class SpreadsheetView : UserControl
 
             // タイトル
             worksheet["A1"].Value = "家計簿";
-            worksheet["A1"].CellStyle.Font.FontSize = 20;
+            worksheet["A1"].CellStyle.Font.Size = 20;
             worksheet["A1"].CellStyle.Font.Bold = true;
 
             // 月の入力
             worksheet["B1"].Value = DateTime.Now.ToString("yyyy年MM月");
-            worksheet["B1"].CellStyle.Font.FontSize = 16;
+            worksheet["B1"].CellStyle.Font.Size = 16;
 
             // ヘッダー
             worksheet["A3"].Value = "項目";
@@ -196,7 +196,7 @@ public partial class SpreadsheetView : UserControl
             {
                 var cell = worksheet[$"{GetColumnName(col)}3"];
                 cell.CellStyle.Font.Bold = true;
-                cell.CellStyle.Font.FontSize = 14;
+                cell.CellStyle.Font.Size = 14;
                 cell.CellStyle.ColorIndex = Syncfusion.XlsIO.ExcelKnownColors.Grey_25_percent;
             }
 
