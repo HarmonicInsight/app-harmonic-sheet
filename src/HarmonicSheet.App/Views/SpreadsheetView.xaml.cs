@@ -627,7 +627,7 @@ public partial class SpreadsheetView : UserControl
 　家計簿や名簿を作るときに使います。
 
 ■ 計算ボタン
-　・合計(SUM): セルを選択して押すと合計を計算
+　・合計: セルを選択して押すと合計を計算
 　・平均: 選択範囲の平均を計算
 
 ■ テンキー
@@ -646,6 +646,21 @@ public partial class SpreadsheetView : UserControl
 　「印刷」ボタンで全てを1ページに収めて印刷できます。";
 
         MessageBox.Show(helpText, "ヘルプ", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    private void OnToggleKeypadClick(object sender, RoutedEventArgs e)
+    {
+        // テンキーパネルの表示/非表示を切り替え
+        if (KeypadPanel.Visibility == Visibility.Visible)
+        {
+            KeypadPanel.Visibility = Visibility.Collapsed;
+            BtnToggleKeypad.Content = new TextBlock { Text = "テンキー表示", FontSize = 24, FontWeight = FontWeights.Bold };
+        }
+        else
+        {
+            KeypadPanel.Visibility = Visibility.Visible;
+            BtnToggleKeypad.Content = new TextBlock { Text = "テンキー非表示", FontSize = 24, FontWeight = FontWeights.Bold };
+        }
     }
 
     // ========================================
