@@ -23,7 +23,7 @@ public partial class SpreadsheetView : UserControl
         }
 
         // 新規ワークブックを作成
-        Spreadsheet.New();
+        Spreadsheet.Create();
 
         // シニア向けの大きなフォント設定
         ConfigureForSeniors();
@@ -65,7 +65,7 @@ public partial class SpreadsheetView : UserControl
 
         if (result == MessageBoxResult.Yes)
         {
-            Spreadsheet.New();
+            Spreadsheet.Create();
             ConfigureForSeniors();
             StatusText.Text = "新しい表を作りました";
         }
