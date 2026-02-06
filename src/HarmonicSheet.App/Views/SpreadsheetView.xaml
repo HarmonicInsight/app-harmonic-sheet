@@ -91,7 +91,7 @@
                                 Padding="20,12"
                                 Click="OnToggleKeypadClick"
                                 ToolTip="テンキーを表示/非表示">
-                            <TextBlock Text="テンキー" FontSize="24" FontWeight="Bold"/>
+                            <TextBlock Text="テンキー非表示" FontSize="24" FontWeight="Bold"/>
                         </Button>
                     </StackPanel>
 
@@ -113,13 +113,28 @@
         <!-- 計算ボタンバー -->
         <!-- ========================================== -->
         <Border Grid.Row="1"
-                Background="{StaticResource SurfaceBrush}"
+                Background="#FFF9E6"
                 Padding="8,6"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderBrush="#FFA500"
+                BorderThickness="0,2,0,2">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                <WrapPanel Orientation="Horizontal" MinWidth="1200">
-                    <Button Style="{StaticResource ActionButtonStyle}"
+                <StackPanel Orientation="Horizontal">
+                    <!-- ラベル -->
+                    <Border Background="#FF8C00"
+                            CornerRadius="8"
+                            Padding="15,10"
+                            Margin="0,0,15,0"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="📐 計算式を作成"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- ボタン -->
+                    <WrapPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource ActionButtonStyle}"
                             Background="#10B981"
                             MinWidth="200"
                             MinHeight="60"
@@ -173,7 +188,8 @@
                             ToolTip="これまでの累計を計算">
                         <TextBlock Text="累計" FontSize="24" FontWeight="Bold"/>
                     </Button>
-                </WrapPanel>
+                    </WrapPanel>
+                </StackPanel>
             </ScrollViewer>
         </Border>
 
@@ -276,7 +292,7 @@
                     BorderBrush="#E7E2DA"
                     BorderThickness="1,0,0,0"
                     Padding="10"
-                    Visibility="Collapsed">
+                    Visibility="Visible">
                 <StackPanel>
                     <!-- モード切り替えボタン -->
                     <Border Background="#FFFFFF"
