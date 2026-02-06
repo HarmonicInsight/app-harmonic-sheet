@@ -24,14 +24,14 @@
 
             <!-- コンテンツエリア -->
             <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
                 <!-- Excelファイル -->
-                <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                <StackPanel Grid.Column="0" Margin="0,0,12,0">
                     <Border Background="#E8F5E9"
                             BorderBrush="#4CAF50"
                             BorderThickness="2"
@@ -106,7 +106,7 @@
                 </StackPanel>
 
                 <!-- 文書ファイル -->
-                <StackPanel Grid.Row="1" Margin="0,0,0,24">
+                <StackPanel Grid.Column="1" Margin="0,0,12,0">
                     <Border Background="#E3F2FD"
                             BorderBrush="#2196F3"
                             BorderThickness="2"
@@ -181,7 +181,7 @@
                 </StackPanel>
 
                 <!-- 受信メール -->
-                <StackPanel Grid.Row="2">
+                <StackPanel Grid.Column="2">
                     <Border Background="#FFF3E0"
                             BorderBrush="#FF9800"
                             BorderThickness="2"
