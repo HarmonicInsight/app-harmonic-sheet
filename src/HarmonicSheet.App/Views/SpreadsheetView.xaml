@@ -92,19 +92,22 @@
         <!-- ========================================== -->
         <!-- 計算ボタンバー -->
         <!-- ========================================== -->
-        <Border Grid.Row="1"
+        <Border x:Name="CalcButtonRow"
+                Grid.Row="1"
                 Background="#FFF9E6"
                 Padding="8,6"
                 BorderBrush="#FFA500"
                 BorderThickness="0,2,0,2">
             <WrapPanel Orientation="Horizontal">
                 <!-- ラベル -->
-                <Border Background="#FF8C00"
+                <Border x:Name="CalcLabel"
+                        Background="#FF8C00"
                         CornerRadius="6"
                         Padding="10,6"
                         Margin="0,0,10,0"
                         VerticalAlignment="Center">
-                    <TextBlock Text="📐 計算式を作成"
+                    <TextBlock x:Name="CalcLabelText"
+                               Text="📐 計算式を作成"
                                FontSize="15"
                                FontWeight="Bold"
                                Foreground="White"
@@ -112,7 +115,8 @@
                 </Border>
 
                 <!-- ボタン -->
-                <Button Style="{StaticResource ActionButtonStyle}"
+                <Button x:Name="BtnSum"
+                        Style="{StaticResource ActionButtonStyle}"
                         Background="#10B981"
                         MinWidth="140"
                         MinHeight="40"
@@ -121,7 +125,8 @@
                         ToolTip="選択範囲の合計を計算">
                     <TextBlock Text="合計" FontSize="18" FontWeight="Bold"/>
                 </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
+                <Button x:Name="BtnAverage"
+                        Style="{StaticResource ActionButtonStyle}"
                         Background="#8B5CF6"
                         MinWidth="140"
                         MinHeight="40"
@@ -130,7 +135,8 @@
                         ToolTip="選択範囲の平均を計算">
                     <TextBlock Text="平均" FontSize="18" FontWeight="Bold"/>
                 </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
+                <Button x:Name="BtnTax10"
+                        Style="{StaticResource ActionButtonStyle}"
                         Background="#F59E0B"
                         MinWidth="140"
                         MinHeight="40"
@@ -139,7 +145,8 @@
                         ToolTip="選択セルに消費税10%を追加">
                     <TextBlock Text="消費税10%" FontSize="16" FontWeight="Bold"/>
                 </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
+                <Button x:Name="BtnTax8"
+                        Style="{StaticResource ActionButtonStyle}"
                         Background="#FB923C"
                         MinWidth="140"
                         MinHeight="40"
@@ -148,7 +155,8 @@
                         ToolTip="選択セルに消費税8%を追加">
                     <TextBlock Text="消費税8%" FontSize="16" FontWeight="Bold"/>
                 </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
+                <Button x:Name="BtnDiscount"
+                        Style="{StaticResource ActionButtonStyle}"
                         Background="#EF4444"
                         MinWidth="140"
                         MinHeight="40"
@@ -157,7 +165,8 @@
                         ToolTip="割引計算">
                     <TextBlock Text="割引計算" FontSize="18" FontWeight="Bold"/>
                 </Button>
-                <Button Style="{StaticResource ActionButtonStyle}"
+                <Button x:Name="BtnCumulative"
+                        Style="{StaticResource ActionButtonStyle}"
                         Background="#14B8A6"
                         MinWidth="140"
                         MinHeight="40"
