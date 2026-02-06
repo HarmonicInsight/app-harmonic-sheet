@@ -46,9 +46,6 @@ public partial class SpreadsheetView : UserControl
             // サービスは後で設定される
         }
 
-        // 計算履歴のバインディング
-        CalcHistory.ItemsSource = _calcHistoryList;
-
         // 新規ワークブックを作成（1シート）
         try
         {
@@ -1355,6 +1352,28 @@ A: 「新規」ボタンを押すと、家計簿テンプレート
         _calcCurrentValue = result.ToString("G");
         _calcStoredValue = result;
         _calcNewNumber = true;
+    }
+
+    private void OnShowHistoryClick(object sender, RoutedEventArgs e)
+    {
+        if (_calcHistoryList.Count == 0)
+        {
+            MessageBox.Show("計算履歴はまだありません。", "計算履歴", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        var historyText = "📝 計算履歴\n\n" + string.Join("\n", _calcHistoryList);
+        var result = MessageBox.Show(
+            historyText + "\n\n履歴をクリアしますか？",
+            "計算履歴",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Information);
+
+        if (result == MessageBoxResult.Yes)
+        {
+            _calcHistoryList.Clear();
+            MessageBox.Show("計算履歴をクリアしました。", "履歴クリア", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 
     private void OnClearHistoryClick(object sender, RoutedEventArgs e)
