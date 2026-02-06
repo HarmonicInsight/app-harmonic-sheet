@@ -95,10 +95,10 @@
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Padding" Value="30,18"/>
-        <Setter Property="Margin" Value="8"/>
-        <Setter Property="MinWidth" Value="150"/>
-        <Setter Property="MinHeight" Value="60"/>
+        <Setter Property="Padding" Value="15,8"/>
+        <Setter Property="Margin" Value="4"/>
+        <Setter Property="MinWidth" Value="120"/>
+        <Setter Property="MinHeight" Value="40"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -106,7 +106,7 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="12"
+                            CornerRadius="8"
                             Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"/>
@@ -127,18 +127,18 @@
     <!-- 音声ボタン（マイク） -->
     <Style x:Key="VoiceButtonStyle" TargetType="Button">
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
-        <Setter Property="FontSize" Value="32"/>
+        <Setter Property="FontSize" Value="28"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Width" Value="80"/>
-        <Setter Property="Height" Value="80"/>
+        <Setter Property="Width" Value="60"/>
+        <Setter Property="Height" Value="60"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Background="{TemplateBinding Background}"
-                            CornerRadius="40">
+                            CornerRadius="30">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"/>
                     </Border>
@@ -163,8 +163,8 @@
         <Setter Property="Background" Value="White"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="Padding" Value="15,12"/>
-        <Setter Property="MinHeight" Value="60"/>
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="MinHeight" Value="45"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -172,7 +172,7 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="10">
+                            CornerRadius="8">
                         <ScrollViewer x:Name="PART_ContentHost"
                                       Margin="{TemplateBinding Padding}"/>
                     </Border>
@@ -196,8 +196,8 @@
         <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
         <Setter Property="BorderThickness" Value="0,0,0,4"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="Padding" Value="40,20"/>
-        <Setter Property="Margin" Value="5,0"/>
+        <Setter Property="Padding" Value="20,10"/>
+        <Setter Property="Margin" Value="3,0"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>

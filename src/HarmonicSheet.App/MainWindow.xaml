@@ -25,7 +25,7 @@
                 Background="{StaticResource SurfaceBrush}"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0,0,0,2"
-                Padding="20,15">
+                Padding="10,8">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -38,7 +38,7 @@
                     <TextBlock Text="HarmonicSheet"
                                Style="{StaticResource LargeTextStyle}"
                                Foreground="{StaticResource PrimaryBrush}"
-                               Margin="0,0,30,0"/>
+                               Margin="0,0,15,0"/>
                 </StackPanel>
 
                 <!-- タブボタン -->
@@ -51,7 +51,7 @@
                                  Checked="OnTabChanged"
                                  GroupName="MainTabs">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="28" Margin="0,0,12,0"/>
+                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,8,0"/>
                             <TextBlock Text="文書"/>
                         </StackPanel>
                     </RadioButton>
@@ -60,7 +60,7 @@
                                  Checked="OnTabChanged"
                                  GroupName="MainTabs">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="28" Margin="0,0,12,0"/>
+                            <TextBlock Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,8,0"/>
                             <TextBlock Text="表"/>
                         </StackPanel>
                     </RadioButton>
@@ -69,7 +69,7 @@
                                  Checked="OnTabChanged"
                                  GroupName="MainTabs">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE715;" FontFamily="Segoe MDL2 Assets" FontSize="28" Margin="0,0,12,0"/>
+                            <TextBlock Text="&#xE715;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,8,0"/>
                             <TextBlock Text="メール"/>
                         </StackPanel>
                     </RadioButton>
@@ -79,11 +79,11 @@
                 <Button Grid.Column="2"
                         Content="&#xE713;"
                         FontFamily="Segoe MDL2 Assets"
-                        FontSize="28"
+                        FontSize="24"
                         Background="Transparent"
                         BorderThickness="0"
                         Foreground="{StaticResource TextSecondaryBrush}"
-                        Padding="15"
+                        Padding="10"
                         Cursor="Hand"
                         ToolTip="設定"
                         Click="OnSettingsClick"/>
@@ -112,7 +112,7 @@
                 Background="{StaticResource SurfaceBrush}"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0,2,0,0"
-                Padding="20,15">
+                Padding="10,8">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -137,7 +137,7 @@
                     <TextBlock Text="音声入力"
                                Style="{StaticResource BaseTextStyle}"
                                VerticalAlignment="Center"
-                               Margin="15,0,0,0"/>
+                               Margin="10,0,0,0"/>
                 </StackPanel>
 
                 <!-- 右: ヘルプボタン -->
@@ -147,7 +147,7 @@
                         Background="#6366F1"
                         Click="OnHelpClick">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,10,0"/>
+                        <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,8,0"/>
                         <TextBlock Text="ヘルプ"/>
                     </StackPanel>
                 </Button>
