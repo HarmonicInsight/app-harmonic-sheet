@@ -118,8 +118,7 @@
                                       Grid.Row="2"
                                       FontSize="18"
                                       FontFamily="Yu Gothic UI, Meiryo"
-                                      Margin="10"
-                                      IsSpellCheckEnabled="False"/>
+                                      Margin="10"/>
 
         <!-- ========================================== -->
         <!-- ステータスバー -->
