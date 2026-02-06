@@ -33,16 +33,6 @@ public partial class SpreadsheetView : UserControl
     private string _formulaBuffer = "";
     private bool _waitingForCellSelect = false;
 
-    // セル選択モード（SUMとAVERAGE用）
-    private enum SelectionMode
-    {
-        None,
-        Sum,
-        Average
-    }
-    private SelectionMode _selectionMode = SelectionMode.None;
-    private List<string> _selectedCells = new();
-
     public SpreadsheetView()
     {
         InitializeComponent();
@@ -466,25 +456,27 @@ public partial class SpreadsheetView : UserControl
     {
         try
         {
-            // セル選択モードに入る
-            _selectionMode = SelectionMode.Sum;
-            _selectedCells.Clear();
-            ModeIndicator.Visibility = Visibility.Visible;
-            ModeText.Text = "SUM選択モード\nセルを選択してください\n完了したら=ボタンを押す";
-
             var selectedRanges = Spreadsheet.ActiveGrid.SelectedRanges;
-            if (selectedRanges != null && selectedRanges.Count > 0)
+            if (selectedRanges == null || selectedRanges.Count == 0)
             {
-                // 既に範囲が選択されている場合は、その範囲を使用
-                var range = selectedRanges[0];
-                var rangeAddress = $"{GetColumnName(range.Left)}{range.Top}:{GetColumnName(range.Right)}{range.Bottom}";
-                _selectedCells.Add(rangeAddress);
-                MessageBox.Show($"範囲 {rangeAddress} が選択されています。\n追加でセルを選択するか、=ボタンで確定してください。", "SUM選択モード", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("セルを選択してから合計ボタンを押してください。", "合計", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             }
-            else
-            {
-                MessageBox.Show("セルまたは範囲を選択してください。\n完了したら=ボタンを押してください。", "SUM選択モード", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+
+            var range = selectedRanges[0];
+            var worksheet = Spreadsheet.ActiveSheet;
+
+            // 選択範囲の下または右に結果を出力
+            var targetRow = range.Bottom + 1;
+            var targetCol = range.Left;
+
+            var rangeAddress = $"{GetColumnName(range.Left)}{range.Top}:{GetColumnName(range.Right)}{range.Bottom}";
+            var formula = $"=SUM({rangeAddress})";
+
+            worksheet[$"{GetColumnName(targetCol)}{targetRow}"].Formula = formula;
+            Spreadsheet.ActiveGrid.InvalidateCell(targetRow, targetCol);
+
+            MessageBox.Show($"合計を {GetColumnName(targetCol)}{targetRow} に計算しました。", "合計", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
@@ -516,25 +508,27 @@ public partial class SpreadsheetView : UserControl
     {
         try
         {
-            // セル選択モードに入る
-            _selectionMode = SelectionMode.Average;
-            _selectedCells.Clear();
-            ModeIndicator.Visibility = Visibility.Visible;
-            ModeText.Text = "AVERAGE選択モード\nセルを選択してください\n完了したら=ボタンを押す";
-
             var selectedRanges = Spreadsheet.ActiveGrid.SelectedRanges;
-            if (selectedRanges != null && selectedRanges.Count > 0)
+            if (selectedRanges == null || selectedRanges.Count == 0)
             {
-                // 既に範囲が選択されている場合は、その範囲を使用
-                var range = selectedRanges[0];
-                var rangeAddress = $"{GetColumnName(range.Left)}{range.Top}:{GetColumnName(range.Right)}{range.Bottom}";
-                _selectedCells.Add(rangeAddress);
-                MessageBox.Show($"範囲 {rangeAddress} が選択されています。\n追加でセルを選択するか、=ボタンで確定してください。", "AVERAGE選択モード", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("セルを選択してから平均ボタンを押してください。", "平均", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             }
-            else
-            {
-                MessageBox.Show("セルまたは範囲を選択してください。\n完了したら=ボタンを押してください。", "AVERAGE選択モード", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+
+            var range = selectedRanges[0];
+            var worksheet = Spreadsheet.ActiveSheet;
+
+            // 選択範囲の下または右に結果を出力
+            var targetRow = range.Bottom + 1;
+            var targetCol = range.Left;
+
+            var rangeAddress = $"{GetColumnName(range.Left)}{range.Top}:{GetColumnName(range.Right)}{range.Bottom}";
+            var formula = $"=AVERAGE({rangeAddress})";
+
+            worksheet[$"{GetColumnName(targetCol)}{targetRow}"].Formula = formula;
+            Spreadsheet.ActiveGrid.InvalidateCell(targetRow, targetCol);
+
+            MessageBox.Show($"平均を {GetColumnName(targetCol)}{targetRow} に計算しました。", "平均", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
@@ -781,36 +775,8 @@ public partial class SpreadsheetView : UserControl
         {
             if (_keypadMode == KeypadMode.Calculator)
             {
-                // セル選択モード（SUMとAVERAGE）の場合
-                if (_selectionMode != SelectionMode.None && _selectedCells.Count > 0)
-                {
-                    var activeCell = Spreadsheet.ActiveGrid.CurrentCell;
-                    if (activeCell != null)
-                    {
-                        var worksheet = Spreadsheet.ActiveSheet;
-                        var row = activeCell.RowIndex;
-                        var col = activeCell.ColumnIndex;
-                        var cellAddress = $"{GetColumnName(col)}{row}";
-
-                        string formula = _selectionMode switch
-                        {
-                            SelectionMode.Sum => $"=SUM({string.Join(",", _selectedCells)})",
-                            SelectionMode.Average => $"=AVERAGE({string.Join(",", _selectedCells)})",
-                            _ => ""
-                        };
-
-                        worksheet[cellAddress].Formula = formula;
-                        Spreadsheet.ActiveGrid.InvalidateCell(row, col);
-
-                        MessageBox.Show($"計算式 {formula} を {cellAddress} に設定しました。", "完了", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-
-                    // モードをリセット
-                    _selectionMode = SelectionMode.None;
-                    _selectedCells.Clear();
-                }
                 // 電卓の計算を実行
-                else if (!string.IsNullOrEmpty(_calcOperator))
+                if (!string.IsNullOrEmpty(_calcOperator))
                 {
                     PerformCalculation();
                     _calcOperator = "";
@@ -845,13 +811,6 @@ public partial class SpreadsheetView : UserControl
                 CellSelectIndicator.Visibility = Visibility.Collapsed;
                 UpdateFormulaDisplay();
             }
-
-            // セル選択モードもクリア
-            if (_selectionMode != SelectionMode.None)
-            {
-                _selectionMode = SelectionMode.None;
-                _selectedCells.Clear();
-            }
         }
         catch (Exception ex)
         {
@@ -879,56 +838,42 @@ public partial class SpreadsheetView : UserControl
     {
         try
         {
-            _waitingForCellSelect = true;
-            CellSelectIndicator.Visibility = Visibility.Visible;
-            BtnCellSelect.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(202, 138, 4)); // Warning color
+            // 現在選択されているセルを取得して式に追加
+            var selectedRanges = Spreadsheet.ActiveGrid.SelectedRanges;
+            if (selectedRanges != null && selectedRanges.Count > 0)
+            {
+                var range = selectedRanges[0];
 
-            // スプレッドシートのセル選択イベントをリッスン
-            Spreadsheet.SelectionChanged += OnSpreadsheetSelectionChanged;
+                // 単一セルの場合
+                if (range.Left == range.Right && range.Top == range.Bottom)
+                {
+                    var cellAddress = $"{GetColumnName(range.Left)}{range.Top}";
+                    _formulaBuffer += cellAddress;
+                }
+                else
+                {
+                    // 範囲の場合
+                    var rangeAddress = $"{GetColumnName(range.Left)}{range.Top}:{GetColumnName(range.Right)}{range.Bottom}";
+                    _formulaBuffer += rangeAddress;
+                }
+
+                UpdateFormulaDisplay();
+
+                // インジケーターを一時的に表示
+                CellSelectIndicator.Visibility = Visibility.Visible;
+                Task.Delay(1000).ContinueWith(_ =>
+                {
+                    Dispatcher.Invoke(() => CellSelectIndicator.Visibility = Visibility.Collapsed);
+                });
+            }
+            else
+            {
+                MessageBox.Show("先にスプレッドシートのセルを選択してから、このボタンを押してください。", "セル選択", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"セル選択モードの開始に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
-    private void OnSpreadsheetSelectionChanged(object sender, EventArgs e)
-    {
-        if (_waitingForCellSelect && _keypadMode == KeypadMode.Input)
-        {
-            try
-            {
-                var selectedRanges = Spreadsheet.ActiveGrid.SelectedRanges;
-                if (selectedRanges != null && selectedRanges.Count > 0)
-                {
-                    var range = selectedRanges[0];
-
-                    // 単一セルの場合
-                    if (range.Left == range.Right && range.Top == range.Bottom)
-                    {
-                        var cellAddress = $"{GetColumnName(range.Left)}{range.Top}";
-                        _formulaBuffer += cellAddress;
-                    }
-                    else
-                    {
-                        // 範囲の場合
-                        var rangeAddress = $"{GetColumnName(range.Left)}{range.Top}:{GetColumnName(range.Right)}{range.Bottom}";
-                        _formulaBuffer += rangeAddress;
-                    }
-
-                    UpdateFormulaDisplay();
-
-                    // セル選択モードを終了
-                    _waitingForCellSelect = false;
-                    CellSelectIndicator.Visibility = Visibility.Collapsed;
-                    BtnCellSelect.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(37, 99, 235)); // Info color
-                    Spreadsheet.SelectionChanged -= OnSpreadsheetSelectionChanged;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"セル参照の追加に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            MessageBox.Show($"セル参照の追加に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
