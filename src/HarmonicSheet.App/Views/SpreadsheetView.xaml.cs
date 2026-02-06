@@ -23,7 +23,7 @@ public partial class SpreadsheetView : UserControl
         }
 
         // 新規ワークブックを作成
-        Spreadsheet.Create(10, 5);
+        Spreadsheet.New();
 
         // シニア向けの大きなフォント設定
         ConfigureForSeniors();
@@ -65,7 +65,7 @@ public partial class SpreadsheetView : UserControl
 
         if (result == MessageBoxResult.Yes)
         {
-            Spreadsheet.Create(10, 5);
+            Spreadsheet.New();
             ConfigureForSeniors();
             StatusText.Text = "新しい表を作りました";
         }
@@ -110,7 +110,7 @@ public partial class SpreadsheetView : UserControl
         {
             try
             {
-                Spreadsheet.Save(dialog.FileName);
+                Spreadsheet.SaveAs(dialog.FileName);
                 StatusText.Text = $"保存しました: {System.IO.Path.GetFileName(dialog.FileName)}";
             }
             catch (Exception ex)
@@ -128,8 +128,14 @@ public partial class SpreadsheetView : UserControl
     {
         try
         {
-            Spreadsheet.Print();
-            StatusText.Text = "印刷しました";
+            // SfSpreadsheet doesn't have a direct Print method
+            // For now, show a message that printing requires saving to Excel first
+            MessageBox.Show(
+                "表の印刷をするには、一度Excelファイルとして保存してから、Excelで開いて印刷してください。",
+                "印刷について",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            StatusText.Text = "印刷するにはExcelファイルとして保存してください";
         }
         catch (Exception ex)
         {

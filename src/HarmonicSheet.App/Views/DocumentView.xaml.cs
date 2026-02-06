@@ -133,8 +133,13 @@ public partial class DocumentView : UserControl
     {
         try
         {
-            RichTextEditor.Print();
-            StatusText.Text = "印刷しました";
+            // Use PrintDocumentCommand to print
+            var printCommand = Syncfusion.Windows.Controls.RichTextBoxAdv.SfRichTextBoxAdv.PrintDocumentCommand;
+            if (printCommand.CanExecute(null, RichTextEditor))
+            {
+                printCommand.Execute(null, RichTextEditor);
+                StatusText.Text = "印刷しました";
+            }
         }
         catch (Exception ex)
         {
@@ -192,7 +197,7 @@ public partial class DocumentView : UserControl
         // RichTextEditorからテキストを抽出
         var sb = new System.Text.StringBuilder();
 
-        foreach (var section in RichTextEditor.Document.Sections)
+        foreach (Syncfusion.Windows.Controls.RichTextBoxAdv.SectionAdv section in RichTextEditor.Document.Sections)
         {
             foreach (var block in section.Blocks)
             {
