@@ -56,6 +56,17 @@ public partial class SettingsWindow : Window
                     ImapServerInput.Text = settings.ImapServer ?? string.Empty;
                     ImapPortInput.Text = settings.ImapPort.ToString();
 
+                    // カラーテーマを設定
+                    var theme = settings.ColorTheme ?? "ModernMinimal";
+                    foreach (ComboBoxItem item in ThemeComboBox.Items)
+                    {
+                        if (item.Tag?.ToString() == theme)
+                        {
+                            ThemeComboBox.SelectedItem = item;
+                            break;
+                        }
+                    }
+
                     if (!string.IsNullOrEmpty(settings.ClaudeApiKey))
                     {
                         ApiKeyStatus.Text = "APIキーが設定されています";
@@ -84,6 +95,8 @@ public partial class SettingsWindow : Window
             }
 
             // アプリ設定を保存
+            var selectedTheme = (ThemeComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "ModernMinimal";
+
             var settings = new AppSettings
             {
                 ClaudeApiKey = ApiKeyInput.Password,
@@ -94,7 +107,8 @@ public partial class SettingsWindow : Window
                 SmtpPort = int.TryParse(SmtpPortInput.Text, out var smtpPort) ? smtpPort : 587,
                 ImapServer = ImapServerInput.Text,
                 ImapPort = int.TryParse(ImapPortInput.Text, out var imapPort) ? imapPort : 993,
-                SpeechRate = (int)SpeechRateSlider.Value
+                SpeechRate = (int)SpeechRateSlider.Value,
+                ColorTheme = selectedTheme
             };
 
             var directory = Path.GetDirectoryName(SettingsFilePath);
@@ -180,6 +194,64 @@ public partial class SettingsWindow : Window
     }
 }
 
+    private void OnThemeChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (ThemeComboBox.SelectedItem is ComboBoxItem item && ThemePreview != null)
+        {
+            // プレビューを更新
+            ThemePreview.Children.Clear();
+            var theme = item.Tag?.ToString() ?? "ModernMinimal";
+
+            var colors = GetThemeColors(theme);
+
+            foreach (var (label, color) in colors)
+            {
+                var button = new Button
+                {
+                    Content = label,
+                    Background = new System.Windows.Media.SolidColorBrush(
+                        (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(color)),
+                    Foreground = System.Windows.Media.Brushes.White,
+                    FontSize = 12,
+                    FontWeight = FontWeights.Bold,
+                    Padding = new Thickness(10, 6, 10, 6),
+                    Margin = new Thickness(4),
+                    BorderThickness = new Thickness(0)
+                };
+                ThemePreview.Children.Add(button);
+            }
+        }
+    }
+
+    private List<(string Label, string Color)> GetThemeColors(string theme)
+    {
+        return theme switch
+        {
+            "GoogleSheets" => new List<(string, string)>
+            {
+                ("ファイル", "#F3F4F6"),
+                ("合計", "#F3F4F6"),
+                ("平均", "#F3F4F6"),
+                ("消費税", "#F3F4F6"),
+            },
+            "SeniorFriendly" => new List<(string, string)>
+            {
+                ("ファイル", "#FFFFFF"),
+                ("合計", "#FFFFFF"),
+                ("平均", "#FFFFFF"),
+                ("保存", "#3B82F6"),
+            },
+            "ModernMinimal" or _ => new List<(string, string)>
+            {
+                ("ファイル", "#F3F4F6"),
+                ("合計", "#EFF6FF"),
+                ("平均", "#EFF6FF"),
+                ("保存", "#3B82F6"),
+            }
+        };
+    }
+}
+
 /// <summary>
 /// アプリケーション設定
 /// </summary>
@@ -195,4 +267,5 @@ public class AppSettings
     public int ImapPort { get; set; } = 993;
     public int SpeechRate { get; set; } = 0;
     public double FontScale { get; set; } = 1.0;
+    public string ColorTheme { get; set; } = "ModernMinimal";
 }
