@@ -20,6 +20,10 @@ public partial class MainWindow : Window
 
     private void OnTabChanged(object sender, RoutedEventArgs e)
     {
+        // 初期化が完了していない場合は何もしない
+        if (DocumentView == null || SpreadsheetView == null || MailView == null || StatusText == null)
+            return;
+
         // 全てのビューを非表示に
         DocumentView.Visibility = Visibility.Collapsed;
         SpreadsheetView.Visibility = Visibility.Collapsed;
