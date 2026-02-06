@@ -186,12 +186,13 @@ public partial class SpreadsheetView : UserControl
                     var workbook = Spreadsheet.Workbook;
                     if (workbook != null && workbook.Worksheets.Count > 0)
                     {
-                        var activeWorksheet = workbook.Worksheets[Spreadsheet.ActiveSheetIndex];
-
-                        // 印刷設定：全てを1ページに収める
-                        activeWorksheet.PageSetup.FitToPagesTall = 1;
-                        activeWorksheet.PageSetup.FitToPagesWide = 1;
-                        activeWorksheet.PageSetup.IsFitToPage = true;
+                        // 全てのワークシートに印刷設定を適用
+                        foreach (var ws in workbook.Worksheets)
+                        {
+                            ws.PageSetup.FitToPagesTall = 1;
+                            ws.PageSetup.FitToPagesWide = 1;
+                            ws.PageSetup.IsFitToPage = true;
+                        }
                     }
 
                     // 一時ファイルに保存して印刷
