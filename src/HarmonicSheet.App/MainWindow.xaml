@@ -38,7 +38,8 @@
                 </Border>
 
                 <!-- タブボタン（縦並び） -->
-                <RadioButton x:Name="TabDocument"
+                <!-- 1. 表（スプレッドシート） -->
+                <RadioButton x:Name="TabSpreadsheet"
                              IsChecked="True"
                              Checked="OnTabChanged"
                              GroupName="MainTabs"
@@ -46,48 +47,6 @@
                              BorderThickness="0"
                              Padding="10"
                              Margin="5,10,5,5"
-                             Cursor="Hand">
-                    <RadioButton.Template>
-                        <ControlTemplate TargetType="RadioButton">
-                            <Border x:Name="Border"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{StaticResource BorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="8"
-                                    Padding="{TemplateBinding Padding}">
-                                <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="&#xE8A5;"
-                                               FontFamily="Segoe MDL2 Assets"
-                                               FontSize="28"
-                                               HorizontalAlignment="Center"
-                                               Foreground="{StaticResource TextBrush}"/>
-                                    <TextBlock Text="文書"
-                                               FontSize="14"
-                                               HorizontalAlignment="Center"
-                                               Margin="0,5,0,0"
-                                               Foreground="{StaticResource TextBrush}"/>
-                                </StackPanel>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="#EEEBE5"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </RadioButton.Template>
-                </RadioButton>
-
-                <RadioButton x:Name="TabSpreadsheet"
-                             Checked="OnTabChanged"
-                             GroupName="MainTabs"
-                             Background="Transparent"
-                             BorderThickness="0"
-                             Padding="10"
-                             Margin="5"
                              Cursor="Hand">
                     <RadioButton.Template>
                         <ControlTemplate TargetType="RadioButton">
@@ -123,6 +82,50 @@
                     </RadioButton.Template>
                 </RadioButton>
 
+                <!-- 2. 文書 -->
+                <RadioButton x:Name="TabDocument"
+                             Checked="OnTabChanged"
+                             GroupName="MainTabs"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="10"
+                             Margin="5"
+                             Cursor="Hand">
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="{TemplateBinding Padding}">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="&#xE8A5;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="28"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{StaticResource TextBrush}"/>
+                                    <TextBlock Text="文書"
+                                               FontSize="14"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,5,0,0"
+                                               Foreground="{StaticResource TextBrush}"/>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="#EEEBE5"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+
+                <!-- 3. メール -->
                 <RadioButton x:Name="TabMail"
                              Checked="OnTabChanged"
                              GroupName="MainTabs"

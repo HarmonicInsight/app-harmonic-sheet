@@ -181,63 +181,153 @@
                                       Margin="10"/>
 
             <!-- テンキーと計算機能 -->
-            <Border Grid.Column="1"
-                    Width="240"
+<Border Grid.Column="1"
+                    Width="260"
                     Background="#F3F0EB"
                     BorderBrush="#E7E2DA"
                     BorderThickness="1,0,0,0"
                     Padding="10">
                 <StackPanel>
-                    <!-- 電卓表示エリア -->
+                    <!-- モード切り替えボタン -->
                     <Border Background="#FFFFFF"
                             BorderBrush="#E7E2DA"
                             BorderThickness="1"
                             CornerRadius="4"
-                            Padding="8"
+                            Padding="4"
                             Margin="0,0,0,10">
-                        <StackPanel>
-                            <TextBlock Text="計算機"
-                                       FontSize="12"
-                                       Foreground="#57534E"
-                                       HorizontalAlignment="Center"
-                                       Margin="0,0,0,4"/>
-                            <TextBox x:Name="CalcDisplay"
-                                     FontSize="18"
-                                     FontWeight="Bold"
-                                     Foreground="#1C1917"
-                                     Background="Transparent"
-                                     BorderThickness="0"
-                                     IsReadOnly="True"
-                                     TextAlignment="Right"
-                                     Text="0"
-                                     Padding="4"/>
-                            <Button Content="結果をコピー"
-                                    FontSize="11"
-                                    Padding="4,2"
-                                    Margin="0,4,0,0"
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="BtnCalcMode"
+                                    Grid.Column="0"
+                                    Content="計算機"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Padding="8"
+                                    Margin="2"
                                     Background="#B8942F"
                                     Foreground="White"
                                     BorderThickness="0"
-                                    Click="OnCopyCalcResultClick"/>
-                        </StackPanel>
+                                    Click="OnCalcModeClick"
+                                    ToolTip="電卓として計算"/>
+                            <Button x:Name="BtnInputMode"
+                                    Grid.Column="1"
+                                    Content="入力"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Padding="8"
+                                    Margin="2"
+                                    Background="#E7E2DA"
+                                    Foreground="#1C1917"
+                                    BorderThickness="0"
+                                    Click="OnInputModeClick"
+                                    ToolTip="セルに式を入力"/>
+                        </Grid>
                     </Border>
 
-                    <!-- モード表示 -->
-                    <Border x:Name="ModeIndicator"
-                            Background="#DBEAFE"
-                            BorderBrush="#2563EB"
-                            BorderThickness="1"
-                            CornerRadius="4"
-                            Padding="6"
-                            Margin="0,0,0,10"
-                            Visibility="Collapsed">
-                        <TextBlock x:Name="ModeText"
-                                   Text="セル選択モード"
-                                   FontSize="11"
-                                   Foreground="#2563EB"
-                                   HorizontalAlignment="Center"
-                                   TextWrapping="Wrap"/>
-                    </Border>
+                    <!-- 計算機モード表示エリア -->
+                    <StackPanel x:Name="CalcModePanel" Visibility="Visible">
+                        <Border Background="#FFFFFF"
+                                BorderBrush="#E7E2DA"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Padding="8"
+                                Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Text="計算結果"
+                                           FontSize="12"
+                                           Foreground="#57534E"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,4"/>
+                                <TextBox x:Name="CalcDisplay"
+                                         FontSize="24"
+                                         FontWeight="Bold"
+                                         Foreground="#1C1917"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         IsReadOnly="True"
+                                         TextAlignment="Right"
+                                         Text="0"
+                                         Padding="4"/>
+                                <Button Content="結果をセルにコピー"
+                                        FontSize="12"
+                                        Padding="6,4"
+                                        Margin="0,4,0,0"
+                                        Background="#B8942F"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Click="OnCopyResultToCell"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- 入力モード表示エリア -->
+                    <StackPanel x:Name="InputModePanel" Visibility="Collapsed">
+                        <Border Background="#FFFFFF"
+                                BorderBrush="#E7E2DA"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Padding="8"
+                                Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Text="計算式"
+                                           FontSize="12"
+                                           Foreground="#57534E"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,4"/>
+                                <TextBox x:Name="FormulaDisplay"
+                                         FontSize="18"
+                                         FontWeight="Bold"
+                                         Foreground="#1C1917"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         IsReadOnly="True"
+                                         TextAlignment="Left"
+                                         Text=""
+                                         Padding="4"
+                                         TextWrapping="Wrap"
+                                         MinHeight="50"/>
+                                <Button x:Name="BtnCellSelect"
+                                        Content="📍 セルを選択"
+                                        FontSize="12"
+                                        Padding="6,4"
+                                        Margin="0,4,0,2"
+                                        Background="#2563EB"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Click="OnCellSelectClick"
+                                        ToolTip="セルをクリックして式に追加"/>
+                                <Button Content="✓ 式を確定"
+                                        FontSize="12"
+                                        Padding="6,4"
+                                        Margin="0,2,0,0"
+                                        Background="#16A34A"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Click="OnConfirmFormulaClick"
+                                        ToolTip="アクティブセルに式を入力"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- セル選択待機インジケーター -->
+                        <Border x:Name="CellSelectIndicator"
+                                Background="#DBEAFE"
+                                BorderBrush="#2563EB"
+                                BorderThickness="2"
+                                CornerRadius="4"
+                                Padding="8"
+                                Margin="0,0,0,10"
+                                Visibility="Collapsed">
+                            <TextBlock Text="📍 セルをクリックしてください"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="#2563EB"
+                                       HorizontalAlignment="Center"
+                                       TextWrapping="Wrap"/>
+                        </Border>
+                    </StackPanel>
 
                     <TextBlock Text="テンキー"
                                FontSize="14"
@@ -277,32 +367,32 @@
                     <!-- 区切り線 -->
                     <Separator Margin="0,10"/>
 
-                    <TextBlock Text="計算"
-                               FontSize="14"
-                               Foreground="#1C1917"
-                               FontWeight="Bold"
-                               Margin="0,5,0,10"
+                    <!-- 演算子ボタン -->
+                    <TextBlock Text="演算子"
+                               FontSize="12"
+                               Foreground="#57534E"
+                               Margin="0,5,0,8"
                                HorizontalAlignment="Center"/>
 
-                    <!-- 四則演算ボタン -->
-                    <UniformGrid Rows="1" Columns="2" Margin="0,0,0,5">
-                        <Button Content="+" Click="OnOperatorClick" Tag="+" FontSize="24" Padding="10" Margin="2" Background="#2563EB" Foreground="White" BorderThickness="0"/>
-                        <Button Content="-" Click="OnOperatorClick" Tag="-" FontSize="24" Padding="10" Margin="2" Background="#2563EB" Foreground="White" BorderThickness="0"/>
+                    <UniformGrid Rows="2" Columns="2" Margin="0,0,0,10">
+                        <Button Content="+" Click="OnOperatorClick" Tag="+" FontSize="28" FontWeight="Bold" Padding="12" Margin="2" Background="#2563EB" Foreground="White" BorderThickness="0" ToolTip="足し算"/>
+                        <Button Content="-" Click="OnOperatorClick" Tag="-" FontSize="28" FontWeight="Bold" Padding="12" Margin="2" Background="#2563EB" Foreground="White" BorderThickness="0" ToolTip="引き算"/>
+                        <Button Content="×" Click="OnOperatorClick" Tag="*" FontSize="28" FontWeight="Bold" Padding="12" Margin="2" Background="#2563EB" Foreground="White" BorderThickness="0" ToolTip="掛け算"/>
+                        <Button Content="÷" Click="OnOperatorClick" Tag="/" FontSize="28" FontWeight="Bold" Padding="12" Margin="2" Background="#2563EB" Foreground="White" BorderThickness="0" ToolTip="割り算"/>
                     </UniformGrid>
 
-                    <UniformGrid Rows="1" Columns="2" Margin="0,0,0,5">
-                        <Button Content="×" Click="OnOperatorClick" Tag="*" FontSize="24" Padding="10" Margin="2" Background="#2563EB" Foreground="White" BorderThickness="0"/>
-                        <Button Content="÷" Click="OnOperatorClick" Tag="/" FontSize="24" Padding="10" Margin="2" Background="#2563EB" Foreground="White" BorderThickness="0"/>
-                    </UniformGrid>
+                    <!-- 計算機モードのボタン -->
+                    <StackPanel x:Name="CalcModeButtons" Visibility="Visible">
+                        <Button Content="=" Click="OnEqualsClick" FontSize="28" FontWeight="Bold" Padding="12" Margin="2,0,2,5" Background="#16A34A" Foreground="White" BorderThickness="0" ToolTip="計算実行"/>
+                    </StackPanel>
 
-                    <!-- セル参照ボタン -->
-                    <Button Content="セル参照" Click="OnCellReferenceClick" FontSize="14" Padding="10" Margin="2,5,2,2" Background="#CA8A04" Foreground="White" BorderThickness="0" ToolTip="クリックしてセルを選択して計算式を作成"/>
+                    <!-- 入力モードのボタン -->
+                    <StackPanel x:Name="InputModeButtons" Visibility="Collapsed">
+                        <Button Content="=" Click="OnStartFormulaClick" FontSize="28" FontWeight="Bold" Padding="12" Margin="2,0,2,5" Background="#CA8A04" Foreground="White" BorderThickness="0" ToolTip="式を開始（=を追加）"/>
+                    </StackPanel>
 
-                    <!-- イコールボタン -->
-                    <Button Content="=" Click="OnEqualsClick" FontSize="24" Padding="10" Margin="2,5,2,2" Background="#16A34A" Foreground="White" BorderThickness="0" ToolTip="計算を実行"/>
-
-                    <!-- クリアボタン -->
-                    <Button Content="C (クリア)" Click="OnClearClick" FontSize="14" Padding="10" Margin="2" Background="#DC2626" Foreground="White" BorderThickness="0"/>
+                    <!-- クリアボタン（共通） -->
+                    <Button Content="C (クリア)" Click="OnClearClick" FontSize="14" FontWeight="Bold" Padding="10" Margin="2" Background="#DC2626" Foreground="White" BorderThickness="0" ToolTip="すべてクリア"/>
                 </StackPanel>
             </Border>
         </Grid>

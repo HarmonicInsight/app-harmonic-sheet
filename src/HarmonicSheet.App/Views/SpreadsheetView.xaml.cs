@@ -15,17 +15,28 @@ public partial class SpreadsheetView : UserControl
         "HarmonicSheet",
         "recent_spreadsheets.txt");
 
+    // キーパッドモード
+    private enum KeypadMode
+    {
+        Calculator,  // 計算機モード
+        Input        // 入力モード（セルに式を入力）
+    }
+    private KeypadMode _keypadMode = KeypadMode.Calculator;
+
     // 電卓の状態
     private string _calcCurrentValue = "0";
     private string _calcOperator = "";
     private double _calcStoredValue = 0;
     private bool _calcNewNumber = true;
 
-    // セル選択モード
+    // 入力モードの状態
+    private string _formulaBuffer = "";
+    private bool _waitingForCellSelect = false;
+
+    // セル選択モード（SUMとAVERAGE用）
     private enum SelectionMode
     {
         None,
-        CellReference,
         Sum,
         Average
     }
@@ -49,6 +60,9 @@ public partial class SpreadsheetView : UserControl
 
             // シニア向けの大きなフォント設定
             ConfigureForSeniors();
+
+            // モードUIを初期化
+            UpdateModeUI();
         }
         catch (Exception ex)
         {
@@ -642,6 +656,52 @@ public partial class SpreadsheetView : UserControl
     }
 
     // ========================================
+    // モード切り替え
+    // ========================================
+
+    private void OnCalcModeClick(object sender, RoutedEventArgs e)
+    {
+        _keypadMode = KeypadMode.Calculator;
+        UpdateModeUI();
+    }
+
+    private void OnInputModeClick(object sender, RoutedEventArgs e)
+    {
+        _keypadMode = KeypadMode.Input;
+        UpdateModeUI();
+    }
+
+    private void UpdateModeUI()
+    {
+        if (_keypadMode == KeypadMode.Calculator)
+        {
+            // 計算機モード
+            BtnCalcMode.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(184, 148, 47)); // Gold
+            BtnCalcMode.Foreground = System.Windows.Media.Brushes.White;
+            BtnInputMode.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(231, 226, 218)); // Light gray
+            BtnInputMode.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(28, 25, 23));
+
+            CalcModePanel.Visibility = Visibility.Visible;
+            InputModePanel.Visibility = Visibility.Collapsed;
+            CalcModeButtons.Visibility = Visibility.Visible;
+            InputModeButtons.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            // 入力モード
+            BtnInputMode.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(184, 148, 47)); // Gold
+            BtnInputMode.Foreground = System.Windows.Media.Brushes.White;
+            BtnCalcMode.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(231, 226, 218)); // Light gray
+            BtnCalcMode.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(28, 25, 23));
+
+            CalcModePanel.Visibility = Visibility.Collapsed;
+            InputModePanel.Visibility = Visibility.Visible;
+            CalcModeButtons.Visibility = Visibility.Collapsed;
+            InputModeButtons.Visibility = Visibility.Visible;
+        }
+    }
+
+    // ========================================
     // テンキーハンドラー
     // ========================================
 
@@ -651,17 +711,26 @@ public partial class SpreadsheetView : UserControl
         {
             try
             {
-                // 電卓モードで数字を入力
-                if (_calcNewNumber)
+                if (_keypadMode == KeypadMode.Calculator)
                 {
-                    _calcCurrentValue = value;
-                    _calcNewNumber = false;
+                    // 計算機モードで数字を入力
+                    if (_calcNewNumber)
+                    {
+                        _calcCurrentValue = value;
+                        _calcNewNumber = false;
+                    }
+                    else
+                    {
+                        _calcCurrentValue += value;
+                    }
+                    UpdateCalcDisplay();
                 }
                 else
                 {
-                    _calcCurrentValue += value;
+                    // 入力モードで数字を式に追加
+                    _formulaBuffer += value;
+                    UpdateFormulaDisplay();
                 }
-                UpdateCalcDisplay();
             }
             catch (Exception ex)
             {
@@ -676,19 +745,28 @@ public partial class SpreadsheetView : UserControl
         {
             try
             {
-                // 前の演算を実行
-                if (!string.IsNullOrEmpty(_calcOperator))
+                if (_keypadMode == KeypadMode.Calculator)
                 {
-                    PerformCalculation();
+                    // 計算機モード: 前の演算を実行
+                    if (!string.IsNullOrEmpty(_calcOperator))
+                    {
+                        PerformCalculation();
+                    }
+                    else
+                    {
+                        _calcStoredValue = double.Parse(_calcCurrentValue);
+                    }
+
+                    _calcOperator = op;
+                    _calcNewNumber = true;
+                    UpdateCalcDisplay();
                 }
                 else
                 {
-                    _calcStoredValue = double.Parse(_calcCurrentValue);
+                    // 入力モード: 演算子を式に追加
+                    _formulaBuffer += op;
+                    UpdateFormulaDisplay();
                 }
-
-                _calcOperator = op;
-                _calcNewNumber = true;
-                UpdateCalcDisplay();
             }
             catch (Exception ex)
             {
@@ -701,42 +779,43 @@ public partial class SpreadsheetView : UserControl
     {
         try
         {
-            // セル選択モードの場合、計算式をセルに入力
-            if (_selectionMode != SelectionMode.None && _selectedCells.Count > 0)
+            if (_keypadMode == KeypadMode.Calculator)
             {
-                var activeCell = Spreadsheet.ActiveGrid.CurrentCell;
-                if (activeCell != null)
+                // セル選択モード（SUMとAVERAGE）の場合
+                if (_selectionMode != SelectionMode.None && _selectedCells.Count > 0)
                 {
-                    var worksheet = Spreadsheet.ActiveSheet;
-                    var row = activeCell.RowIndex;
-                    var col = activeCell.ColumnIndex;
-                    var cellAddress = $"{GetColumnName(col)}{row}";
-
-                    string formula = _selectionMode switch
+                    var activeCell = Spreadsheet.ActiveGrid.CurrentCell;
+                    if (activeCell != null)
                     {
-                        SelectionMode.Sum => $"=SUM({string.Join(",", _selectedCells)})",
-                        SelectionMode.Average => $"=AVERAGE({string.Join(",", _selectedCells)})",
-                        SelectionMode.CellReference => $"={string.Join("+", _selectedCells)}",
-                        _ => ""
-                    };
+                        var worksheet = Spreadsheet.ActiveSheet;
+                        var row = activeCell.RowIndex;
+                        var col = activeCell.ColumnIndex;
+                        var cellAddress = $"{GetColumnName(col)}{row}";
 
-                    worksheet[cellAddress].Formula = formula;
-                    Spreadsheet.ActiveGrid.InvalidateCell(row, col);
+                        string formula = _selectionMode switch
+                        {
+                            SelectionMode.Sum => $"=SUM({string.Join(",", _selectedCells)})",
+                            SelectionMode.Average => $"=AVERAGE({string.Join(",", _selectedCells)})",
+                            _ => ""
+                        };
 
-                    MessageBox.Show($"計算式 {formula} を {cellAddress} に設定しました。", "完了", MessageBoxButton.OK, MessageBoxImage.Information);
+                        worksheet[cellAddress].Formula = formula;
+                        Spreadsheet.ActiveGrid.InvalidateCell(row, col);
+
+                        MessageBox.Show($"計算式 {formula} を {cellAddress} に設定しました。", "完了", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+
+                    // モードをリセット
+                    _selectionMode = SelectionMode.None;
+                    _selectedCells.Clear();
                 }
-
-                // モードをリセット
-                _selectionMode = SelectionMode.None;
-                _selectedCells.Clear();
-                ModeIndicator.Visibility = Visibility.Collapsed;
-            }
-            // 電卓の計算を実行
-            else if (!string.IsNullOrEmpty(_calcOperator))
-            {
-                PerformCalculation();
-                _calcOperator = "";
-                UpdateCalcDisplay();
+                // 電卓の計算を実行
+                else if (!string.IsNullOrEmpty(_calcOperator))
+                {
+                    PerformCalculation();
+                    _calcOperator = "";
+                    UpdateCalcDisplay();
+                }
             }
         }
         catch (Exception ex)
@@ -749,24 +828,174 @@ public partial class SpreadsheetView : UserControl
     {
         try
         {
-            // 電卓をクリア
-            _calcCurrentValue = "0";
-            _calcOperator = "";
-            _calcStoredValue = 0;
-            _calcNewNumber = true;
-            UpdateCalcDisplay();
+            if (_keypadMode == KeypadMode.Calculator)
+            {
+                // 計算機をクリア
+                _calcCurrentValue = "0";
+                _calcOperator = "";
+                _calcStoredValue = 0;
+                _calcNewNumber = true;
+                UpdateCalcDisplay();
+            }
+            else
+            {
+                // 入力モードをクリア
+                _formulaBuffer = "";
+                _waitingForCellSelect = false;
+                CellSelectIndicator.Visibility = Visibility.Collapsed;
+                UpdateFormulaDisplay();
+            }
 
             // セル選択モードもクリア
             if (_selectionMode != SelectionMode.None)
             {
                 _selectionMode = SelectionMode.None;
                 _selectedCells.Clear();
-                ModeIndicator.Visibility = Visibility.Collapsed;
             }
         }
         catch (Exception ex)
         {
             MessageBox.Show($"クリアに失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    // ========================================
+    // 入力モード専用ハンドラー
+    // ========================================
+
+    private void OnStartFormulaClick(object sender, RoutedEventArgs e)
+    {
+        if (_keypadMode == KeypadMode.Input)
+        {
+            if (string.IsNullOrEmpty(_formulaBuffer) || !_formulaBuffer.StartsWith("="))
+            {
+                _formulaBuffer = "=" + _formulaBuffer;
+                UpdateFormulaDisplay();
+            }
+        }
+    }
+
+    private void OnCellSelectClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            _waitingForCellSelect = true;
+            CellSelectIndicator.Visibility = Visibility.Visible;
+            BtnCellSelect.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(202, 138, 4)); // Warning color
+
+            // スプレッドシートのセル選択イベントをリッスン
+            Spreadsheet.SelectionChanged += OnSpreadsheetSelectionChanged;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"セル選択モードの開始に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnSpreadsheetSelectionChanged(object sender, EventArgs e)
+    {
+        if (_waitingForCellSelect && _keypadMode == KeypadMode.Input)
+        {
+            try
+            {
+                var selectedRanges = Spreadsheet.ActiveGrid.SelectedRanges;
+                if (selectedRanges != null && selectedRanges.Count > 0)
+                {
+                    var range = selectedRanges[0];
+
+                    // 単一セルの場合
+                    if (range.Left == range.Right && range.Top == range.Bottom)
+                    {
+                        var cellAddress = $"{GetColumnName(range.Left)}{range.Top}";
+                        _formulaBuffer += cellAddress;
+                    }
+                    else
+                    {
+                        // 範囲の場合
+                        var rangeAddress = $"{GetColumnName(range.Left)}{range.Top}:{GetColumnName(range.Right)}{range.Bottom}";
+                        _formulaBuffer += rangeAddress;
+                    }
+
+                    UpdateFormulaDisplay();
+
+                    // セル選択モードを終了
+                    _waitingForCellSelect = false;
+                    CellSelectIndicator.Visibility = Visibility.Collapsed;
+                    BtnCellSelect.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(37, 99, 235)); // Info color
+                    Spreadsheet.SelectionChanged -= OnSpreadsheetSelectionChanged;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"セル参照の追加に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
+    private void OnConfirmFormulaClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(_formulaBuffer))
+            {
+                MessageBox.Show("計算式が空です。", "確認", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var activeCell = Spreadsheet.ActiveGrid.CurrentCell;
+            if (activeCell != null)
+            {
+                var worksheet = Spreadsheet.ActiveSheet;
+                var row = activeCell.RowIndex;
+                var col = activeCell.ColumnIndex;
+                var cellAddress = $"{GetColumnName(col)}{row}";
+
+                // 式をセルに入力
+                if (_formulaBuffer.StartsWith("="))
+                {
+                    worksheet[cellAddress].Formula = _formulaBuffer;
+                }
+                else
+                {
+                    worksheet[cellAddress].Value = _formulaBuffer;
+                }
+
+                Spreadsheet.ActiveGrid.InvalidateCell(row, col);
+
+                MessageBox.Show($"計算式 {_formulaBuffer} を {cellAddress} に入力しました。", "完了", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // クリア
+                _formulaBuffer = "";
+                UpdateFormulaDisplay();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"計算式の入力に失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnCopyResultToCell(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var activeCell = Spreadsheet.ActiveGrid.CurrentCell;
+            if (activeCell != null)
+            {
+                var worksheet = Spreadsheet.ActiveSheet;
+                var row = activeCell.RowIndex;
+                var col = activeCell.ColumnIndex;
+                var cellAddress = $"{GetColumnName(col)}{row}";
+
+                worksheet[cellAddress].Value = _calcCurrentValue;
+                Spreadsheet.ActiveGrid.InvalidateCell(row, col);
+
+                MessageBox.Show($"計算結果 {_calcCurrentValue} を {cellAddress} にコピーしました。", "完了", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"セルへのコピーに失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -782,6 +1011,11 @@ public partial class SpreadsheetView : UserControl
             displayValue = $"{_calcStoredValue} {_calcOperator} {_calcCurrentValue}";
         }
         CalcDisplay.Text = displayValue;
+    }
+
+    private void UpdateFormulaDisplay()
+    {
+        FormulaDisplay.Text = _formulaBuffer;
     }
 
     private void PerformCalculation()
@@ -801,36 +1035,4 @@ public partial class SpreadsheetView : UserControl
         _calcNewNumber = true;
     }
 
-    private void OnCopyCalcResultClick(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            Clipboard.SetText(_calcCurrentValue);
-            MessageBox.Show($"計算結果 {_calcCurrentValue} をコピーしました。", "コピー完了", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"コピーに失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
-    // ========================================
-    // セル選択モード
-    // ========================================
-
-    private void OnCellReferenceClick(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            _selectionMode = SelectionMode.CellReference;
-            _selectedCells.Clear();
-            ModeIndicator.Visibility = Visibility.Visible;
-            ModeText.Text = "セル参照モード\nセルをクリックして選択\n完了したら=ボタンを押す";
-            MessageBox.Show("セルをクリックして選択してください。\n完了したら=ボタンを押してください。", "セル参照モード", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"モードの切り替えに失敗しました。\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
 }
