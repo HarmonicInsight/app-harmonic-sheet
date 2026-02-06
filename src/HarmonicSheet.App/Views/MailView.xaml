@@ -140,10 +140,66 @@
 
                 <!-- 本文 -->
                 <ScrollViewer Grid.Row="1" Padding="20">
-                    <TextBlock x:Name="MailBody"
-                               Text="メールを選んでください"
-                               Style="{StaticResource BaseTextStyle}"
-                               TextWrapping="Wrap"/>
+                    <StackPanel>
+                        <TextBlock x:Name="MailBody"
+                                   Text="メールを選んでください"
+                                   Style="{StaticResource BaseTextStyle}"
+                                   TextWrapping="Wrap"/>
+
+                        <!-- 添付ファイル表示 -->
+                        <Border x:Name="AttachmentsPanel"
+                                Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="15"
+                                Margin="0,20,0,0"
+                                Visibility="Collapsed">
+                            <StackPanel>
+                                <TextBlock Text="📎 添付ファイル"
+                                           Style="{StaticResource BaseTextStyle}"
+                                           FontWeight="SemiBold"
+                                           Margin="0,0,0,10"/>
+                                <ItemsControl x:Name="AttachmentsList">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="White"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="5"
+                                                    Padding="10,8"
+                                                    Margin="0,0,0,8">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Grid.Column="0">
+                                                        <TextBlock Text="{Binding FileName}"
+                                                                   FontSize="16"
+                                                                   FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding FileSizeDisplay}"
+                                                                   FontSize="14"
+                                                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1"
+                                                            Style="{StaticResource ActionButtonStyle}"
+                                                            Background="#6366F1"
+                                                            Tag="{Binding}"
+                                                            Click="OnSaveAttachmentClick">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,6,0"/>
+                                                            <TextBlock Text="保存"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
                 </ScrollViewer>
 
                 <!-- ステータス -->
@@ -217,13 +273,79 @@
                 </Border>
 
                 <!-- 本文入力 -->
-                <TextBox x:Name="BodyInput"
-                         Grid.Row="2"
-                         Style="{StaticResource LargeTextBoxStyle}"
-                         AcceptsReturn="True"
-                         TextWrapping="Wrap"
-                         VerticalScrollBarVisibility="Auto"
-                         Margin="20"/>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox x:Name="BodyInput"
+                             Grid.Row="0"
+                             Style="{StaticResource LargeTextBoxStyle}"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             VerticalScrollBarVisibility="Auto"
+                             Margin="20,20,20,10"/>
+
+                    <!-- 添付ファイルエリア -->
+                    <Border Grid.Row="1"
+                            Background="{StaticResource SurfaceBrush}"
+                            Padding="20,10,20,20"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0,1,0,0">
+                        <StackPanel>
+                            <Button Style="{StaticResource ActionButtonStyle}"
+                                    Background="#8B5CF6"
+                                    HorizontalAlignment="Left"
+                                    Click="OnAttachFileClick">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE723;" FontFamily="Segoe MDL2 Assets" FontSize="20" Margin="0,0,8,0"/>
+                                    <TextBlock Text="ファイル添付"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- 添付ファイルリスト -->
+                            <ItemsControl x:Name="ComposeAttachmentsList"
+                                          Margin="0,10,0,0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="White"
+                                                BorderBrush="{StaticResource BorderBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="5"
+                                                Padding="10,8"
+                                                Margin="0,0,0,8">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="{Binding FileName}"
+                                                               FontSize="16"
+                                                               FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding FileSizeDisplay}"
+                                                               FontSize="14"
+                                                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="1"
+                                                        Style="{StaticResource ActionButtonStyle}"
+                                                        Background="#EF4444"
+                                                        Tag="{Binding}"
+                                                        Click="OnRemoveAttachmentClick">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,6,0"/>
+                                                        <TextBlock Text="削除"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </Grid>
 
                 <!-- 送信ボタン -->
                 <Border Grid.Row="3"

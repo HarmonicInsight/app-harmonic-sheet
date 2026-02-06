@@ -63,7 +63,7 @@ public partial class MainWindow : Window
 
     private void OnHelpClick(object sender, RoutedEventArgs e)
     {
-        var helpText = @"【HarmonicSheet の使い方】
+        var helpText = @"【HarmonicOffice の使い方】
 
 ■ 文書タブ
 　文章を書くことができます。
