@@ -138,6 +138,46 @@ dotnet run --project src/HarmonicSheet.App
 3. プレビューで確認
 4. 保存
 
+## トラブルシューティング
+
+### アプリが起動しない場合
+
+**方法1: チュートリアルをスキップして起動**
+```bash
+dotnet run --project src/HarmonicSheet.App -- --skip-tutorial
+```
+
+**方法2: チュートリアル進捗ファイルを削除**
+```powershell
+# PowerShellで実行
+Remove-Item "$env:APPDATA\HarmonicSheet\tutorial_progress.json" -ErrorAction SilentlyContinue
+```
+
+**方法3: ビルドキャッシュをクリア**
+```bash
+dotnet clean src/HarmonicSheet.App
+dotnet build src/HarmonicSheet.App
+dotnet run --project src/HarmonicSheet.App
+```
+
+### エラーメッセージの確認
+
+起動時にエラーが発生する場合、詳細なエラーメッセージが表示されます。
+エラーメッセージのスクリーンショットを撮って、[Issues](https://github.com/HarmonicInsight/app-harmonic-sheet/issues)に報告してください。
+
+### よくある問題
+
+**Q: Syncfusionのライセンス警告が表示される**
+A: Syncfusionの[Community License](https://www.syncfusion.com/sales/communitylicense)を取得してください（無料）。
+   ライセンスキーを取得したら、`App.xaml.cs`の22行目付近のコメントを外して設定してください。
+
+**Q: 表計算で「表の初期化に失敗しました」と表示される**
+A: Syncfusionパッケージが正しくインストールされているか確認してください:
+```bash
+dotnet restore
+dotnet build
+```
+
 ## ライセンス
 
 MIT License

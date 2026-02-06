@@ -20,10 +20,18 @@ public partial class SpreadsheetView : UserControl
         }
 
         // 新規ワークブックを作成（1シート）
-        Spreadsheet.Create(1);
+        try
+        {
+            Spreadsheet.Create(1);
 
-        // シニア向けの大きなフォント設定
-        ConfigureForSeniors();
+            // シニア向けの大きなフォント設定
+            ConfigureForSeniors();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Spreadsheet initialization error: {ex.Message}");
+            StatusText.Text = $"表の初期化に失敗しました: {ex.Message}";
+        }
     }
 
     private void ConfigureForSeniors()
