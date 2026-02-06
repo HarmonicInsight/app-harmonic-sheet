@@ -4,21 +4,21 @@
              Background="{StaticResource BackgroundBrush}">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="40">
+        <Grid Margin="24">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <!-- ヘッダー -->
-            <StackPanel Grid.Row="0" Margin="0,0,0,40">
+            <StackPanel Grid.Row="0" Margin="0,0,0,20">
                 <TextBlock Text="📋 ホーム"
-                           FontSize="48"
+                           FontSize="28"
                            FontWeight="Bold"
                            Foreground="{StaticResource TextBrush}"
-                           Margin="0,0,0,10"/>
+                           Margin="0,0,0,8"/>
                 <TextBlock Text="最近使ったファイルとメール"
-                           FontSize="24"
+                           FontSize="16"
                            Foreground="{StaticResource TextSecondaryBrush}"/>
             </StackPanel>
 
@@ -31,15 +31,15 @@
                 </Grid.RowDefinitions>
 
                 <!-- Excelファイル -->
-                <StackPanel Grid.Row="0" Margin="0,0,0,40">
+                <StackPanel Grid.Row="0" Margin="0,0,0,24">
                     <Border Background="#E8F5E9"
                             BorderBrush="#4CAF50"
-                            BorderThickness="3"
-                            CornerRadius="12"
-                            Padding="20"
-                            Margin="0,0,0,20">
+                            BorderThickness="2"
+                            CornerRadius="8"
+                            Padding="12"
+                            Margin="0,0,0,12">
                         <TextBlock Text="📊 最近使った表（Excel）"
-                                   FontSize="32"
+                                   FontSize="20"
                                    FontWeight="Bold"
                                    Foreground="#2E7D32"/>
                     </Border>
@@ -49,12 +49,12 @@
                             <DataTemplate>
                                 <Button Click="OnOpenSpreadsheet"
                                         Tag="{Binding Path}"
-                                        Margin="0,0,0,15"
+                                        Margin="0,0,0,10"
                                         HorizontalContentAlignment="Stretch"
                                         Background="White"
                                         BorderBrush="#E0E0E0"
-                                        BorderThickness="2"
-                                        Padding="25"
+                                        BorderThickness="1"
+                                        Padding="15"
                                         Cursor="Hand">
                                     <Button.Style>
                                         <Style TargetType="Button">
@@ -85,18 +85,18 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="📊"
-                                                   FontSize="40"
+                                                   FontSize="28"
                                                    VerticalAlignment="Center"
-                                                   Margin="0,0,20,0"/>
+                                                   Margin="0,0,12,0"/>
                                         <StackPanel Grid.Column="1">
                                             <TextBlock Text="{Binding FileName}"
-                                                       FontSize="28"
+                                                       FontSize="18"
                                                        FontWeight="Bold"
                                                        Foreground="{StaticResource TextBrush}"/>
                                             <TextBlock Text="{Binding LastAccessed, StringFormat='最終使用: {0:yyyy/MM/dd HH:mm}'}"
-                                                       FontSize="18"
+                                                       FontSize="14"
                                                        Foreground="{StaticResource TextSecondaryBrush}"
-                                                       Margin="0,5,0,0"/>
+                                                       Margin="0,4,0,0"/>
                                         </StackPanel>
                                     </Grid>
                                 </Button>
@@ -106,15 +106,15 @@
                 </StackPanel>
 
                 <!-- 文書ファイル -->
-                <StackPanel Grid.Row="1" Margin="0,0,0,40">
+                <StackPanel Grid.Row="1" Margin="0,0,0,24">
                     <Border Background="#E3F2FD"
                             BorderBrush="#2196F3"
-                            BorderThickness="3"
-                            CornerRadius="12"
-                            Padding="20"
-                            Margin="0,0,0,20">
+                            BorderThickness="2"
+                            CornerRadius="8"
+                            Padding="12"
+                            Margin="0,0,0,12">
                         <TextBlock Text="📄 最近使った文書"
-                                   FontSize="32"
+                                   FontSize="20"
                                    FontWeight="Bold"
                                    Foreground="#1565C0"/>
                     </Border>
@@ -124,12 +124,12 @@
                             <DataTemplate>
                                 <Button Click="OnOpenDocument"
                                         Tag="{Binding Path}"
-                                        Margin="0,0,0,15"
+                                        Margin="0,0,0,10"
                                         HorizontalContentAlignment="Stretch"
                                         Background="White"
                                         BorderBrush="#E0E0E0"
-                                        BorderThickness="2"
-                                        Padding="25"
+                                        BorderThickness="1"
+                                        Padding="15"
                                         Cursor="Hand">
                                     <Button.Style>
                                         <Style TargetType="Button">
@@ -160,18 +160,18 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="📄"
-                                                   FontSize="40"
+                                                   FontSize="28"
                                                    VerticalAlignment="Center"
-                                                   Margin="0,0,20,0"/>
+                                                   Margin="0,0,12,0"/>
                                         <StackPanel Grid.Column="1">
                                             <TextBlock Text="{Binding FileName}"
-                                                       FontSize="28"
+                                                       FontSize="18"
                                                        FontWeight="Bold"
                                                        Foreground="{StaticResource TextBrush}"/>
                                             <TextBlock Text="{Binding LastAccessed, StringFormat='最終使用: {0:yyyy/MM/dd HH:mm}'}"
-                                                       FontSize="18"
+                                                       FontSize="14"
                                                        Foreground="{StaticResource TextSecondaryBrush}"
-                                                       Margin="0,5,0,0"/>
+                                                       Margin="0,4,0,0"/>
                                         </StackPanel>
                                     </Grid>
                                 </Button>
@@ -184,12 +184,12 @@
                 <StackPanel Grid.Row="2">
                     <Border Background="#FFF3E0"
                             BorderBrush="#FF9800"
-                            BorderThickness="3"
-                            CornerRadius="12"
-                            Padding="20"
-                            Margin="0,0,0,20">
+                            BorderThickness="2"
+                            CornerRadius="8"
+                            Padding="12"
+                            Margin="0,0,0,12">
                         <TextBlock Text="📧 最近の受信メール"
-                                   FontSize="32"
+                                   FontSize="20"
                                    FontWeight="Bold"
                                    Foreground="#E65100"/>
                     </Border>
@@ -199,12 +199,12 @@
                             <DataTemplate>
                                 <Button Click="OnOpenMail"
                                         Tag="{Binding Id}"
-                                        Margin="0,0,0,15"
+                                        Margin="0,0,0,10"
                                         HorizontalContentAlignment="Stretch"
                                         Background="White"
                                         BorderBrush="#E0E0E0"
-                                        BorderThickness="2"
-                                        Padding="25"
+                                        BorderThickness="1"
+                                        Padding="15"
                                         Cursor="Hand">
                                     <Button.Style>
                                         <Style TargetType="Button">
@@ -235,22 +235,22 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="📧"
-                                                   FontSize="40"
+                                                   FontSize="28"
                                                    VerticalAlignment="Center"
-                                                   Margin="0,0,20,0"/>
+                                                   Margin="0,0,12,0"/>
                                         <StackPanel Grid.Column="1">
                                             <TextBlock Text="{Binding Subject}"
-                                                       FontSize="28"
+                                                       FontSize="18"
                                                        FontWeight="Bold"
                                                        Foreground="{StaticResource TextBrush}"/>
                                             <TextBlock Text="{Binding From}"
-                                                       FontSize="20"
+                                                       FontSize="15"
                                                        Foreground="{StaticResource TextSecondaryBrush}"
-                                                       Margin="0,5,0,0"/>
+                                                       Margin="0,4,0,0"/>
                                             <TextBlock Text="{Binding ReceivedDate, StringFormat='受信: {0:yyyy/MM/dd HH:mm}'}"
-                                                       FontSize="18"
+                                                       FontSize="14"
                                                        Foreground="{StaticResource TextSecondaryBrush}"
-                                                       Margin="0,5,0,0"/>
+                                                       Margin="0,4,0,0"/>
                                         </StackPanel>
                                     </Grid>
                                 </Button>
